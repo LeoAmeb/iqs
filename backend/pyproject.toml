@@ -1,0 +1,98 @@
+[project]
+name = "template-backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "Django==5.1.*",
+    "djangorestframework==3.15.*",
+    "djangorestframework-simplejwt==5.3.*",
+    "dj-rest-auth[with_social]==7.*",
+    "django-allauth[socialaccount]==65.*",
+    "drf-spectacular==0.27.*",
+    "django-cors-headers==4.*",
+    "celery==5.4.*",
+    "redis==5.*",
+    "django-redis==5.4.*",
+    "psycopg[binary]==3.*",
+    "python-decouple==3.8",
+    "gunicorn==23.*",
+    "django-auditlog==3.*",
+    "Pillow==11.*",
+    "django-filter==24.*",
+    "dj-database-url==2.*",
+]
+
+[dependency-groups]
+dev = [
+    "flower==2.*",
+    "pytest==8.*",
+    "pytest-django==4.*",
+    "pytest-cov==5.*",
+    "factory-boy==3.*",
+    "faker==28.*",
+    "ruff==0.6.*",
+    "mypy==1.*",
+    "django-stubs[compatible-mypy]==5.*",
+    "djangorestframework-stubs==3.*",
+    "ipython==8.*",
+    "django-extensions==3.*",
+]
+
+# ─── Ruff ─────────────────────────────────────────────────────────────────────
+[tool.ruff]
+line-length = 100
+indent-width = 4
+target-version = "py312"
+
+exclude = [
+  ".venv", "__pypackages__", "*/migrations/*",
+]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "TCH", "RUF"]
+ignore = ["E501", "B008", "RUF012", "SIM108"]
+unfixable = ["B"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config"]
+
+[tool.ruff.lint.per-file-ignores]
+"*/settings/*.py" = ["F405", "F403"]
+"**/__init__.py"  = ["F401"]
+"**/test_*.py"    = ["S101", "S106", "PLR2004"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+# ─── mypy ─────────────────────────────────────────────────────────────────────
+[tool.mypy]
+python_version        = "3.12"
+plugins               = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+strict                = false
+ignore_missing_imports = true
+warn_unused_ignores   = true
+warn_redundant_casts  = true
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings.development"
+
+# ─── pytest ───────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.development"
+python_files   = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+testpaths = ["apps"]
+markers = [
+  "slow: marks tests as slow",
+  "integration: marks tests that require external services",
+]

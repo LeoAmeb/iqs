@@ -1,0 +1,13 @@
+-r base.txt
+flower==2.*
+pytest==8.*
+pytest-django==4.*
+pytest-cov==5.*
+factory-boy==3.*
+faker==28.*
+ruff==0.6.*
+mypy==1.*
+django-stubs[compatible-mypy]==5.*
+djangorestframework-stubs==3.*
+ipython==8.*
+django-extensions==3.*

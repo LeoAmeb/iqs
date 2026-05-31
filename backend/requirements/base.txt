@@ -1,0 +1,17 @@
+Django==5.1.*
+djangorestframework==3.15.*
+djangorestframework-simplejwt==5.3.*
+dj-rest-auth[with_social]==7.*
+django-allauth[socialaccount]==65.*
+drf-spectacular==0.27.*
+django-cors-headers==4.*
+celery==5.4.*
+redis==5.*
+django-redis==5.4.*
+psycopg[binary]==3.*
+python-decouple==3.8
+gunicorn==23.*
+django-auditlog==3.*
+Pillow==11.*
+django-filter==24.*
+dj-database-url==2.*

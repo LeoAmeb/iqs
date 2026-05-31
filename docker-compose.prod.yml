@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  postgres:
+    # In production use an external managed database
+    # Remove this service and set DATABASE_URL env var instead
+    profiles: ["local-db"]
+
+  backend:
+    command: []  # Uses Dockerfile ENTRYPOINT (gunicorn via entrypoint.sh)
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+    volumes: []  # No bind mounts in production
+    restart: unless-stopped
+
+  celery:
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+    volumes: []
+    restart: unless-stopped
+
+  frontend:
+    build:
+      target: runner
+    command: []  # Uses Dockerfile CMD (node server.js)
+    volumes: []
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production

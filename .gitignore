@@ -1,0 +1,105 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+!frontend/lib/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv/
+venv/
+ENV/
+env/
+.env.local
+.env.*.local
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+.media/
+
+# Node
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js
+.next/
+out/
+
+# Production
+/frontend/build
+
+# Testing
+.coverage
+htmlcov/
+.tox/
+.nox/
+.cache
+.pytest_cache/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Docker
+.dockerignore
+!frontend/.dockerignore
+!backend/.dockerignore
+
+# Env files (keep examples)
+.env
+!.env.example
+!.env.local.example
+!backend/.env.example
+
+# Ruff cache
+.ruff_cache/
+
+# mypy
+.mypy_cache/
+dmypy.json
+dmypy.pid
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
