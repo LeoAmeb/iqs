@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useEffect } from "react"
 import { useUser, useUpdateUser } from "@/hooks/use-users"
-import { useRoles } from "@/hooks/use-roles"
+import { useGrupos } from "@/hooks/use-grupos"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,13 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -34,7 +28,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 const editUserSchema = z.object({
   first_name: z.string().min(1, "El nombre es requerido"),
   last_name: z.string().min(1, "Los apellidos son requeridos"),
-  role_id: z.string().optional(),
+  group_ids: z.array(z.number()),
   is_active: z.boolean(),
 })
 
@@ -53,7 +47,7 @@ export default function EditUserPage({
   const userId = Number(id)
 
   const { data: user, isLoading: userLoading } = useUser(userId)
-  const { data: rolesData } = useRoles()
+  const { data: gruposData } = useGrupos()
   const updateUser = useUpdateUser(userId)
 
   const form = useForm<EditUserValues>({
@@ -61,7 +55,7 @@ export default function EditUserPage({
     defaultValues: {
       first_name: "",
       last_name: "",
-      role_id: undefined,
+      group_ids: [],
       is_active: true,
     },
   })
@@ -71,7 +65,7 @@ export default function EditUserPage({
       form.reset({
         first_name: user.first_name,
         last_name: user.last_name,
-        role_id: user.role ? String(user.role.id) : undefined,
+        group_ids: user.groups.map((g) => g.id),
         is_active: user.is_active,
       })
     }
@@ -82,10 +76,8 @@ export default function EditUserPage({
       first_name: values.first_name,
       last_name: values.last_name,
       is_active: values.is_active,
-      ...(values.role_id && values.role_id !== "none"
-        ? { role_id: Number(values.role_id) }
-        : { role_id: null }),
-    })
+      group_ids: values.group_ids,
+    } as Parameters<typeof updateUser.mutateAsync>[0])
   }
 
   if (userLoading) {
@@ -131,7 +123,6 @@ export default function EditUserPage({
         </div>
       </div>
 
-      {/* User card summary */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-center gap-4">
@@ -145,16 +136,13 @@ export default function EditUserPage({
               <p className="font-semibold text-lg">{user.full_name}</p>
               <p className="text-sm text-muted-foreground">{user.email}</p>
               {user.is_superuser && (
-                <span className="text-xs text-primary font-medium">
-                  Superusuario
-                </span>
+                <span className="text-xs text-primary font-medium">Superusuario</span>
               )}
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Edit form */}
       <Card>
         <CardHeader>
           <CardTitle>Información del usuario</CardTitle>
@@ -193,28 +181,34 @@ export default function EditUserPage({
 
               <FormField
                 control={form.control}
-                name="role_id"
+                name="group_ids"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Rol</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value ?? "none"}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sin rol asignado" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="none">Sin rol</SelectItem>
-                        {rolesData?.results.map((role) => (
-                          <SelectItem key={role.id} value={String(role.id)}>
-                            {role.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Grupos</FormLabel>
+                    <div className="flex flex-col gap-2 rounded-md border p-4">
+                      {gruposData?.results.length ? (
+                        gruposData.results.map((grupo) => (
+                          <label
+                            key={grupo.id}
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <Checkbox
+                              checked={field.value.includes(grupo.id)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  field.onChange([...field.value, grupo.id])
+                                } else {
+                                  field.onChange(field.value.filter((id) => id !== grupo.id))
+                                }
+                              }}
+                            />
+                            <span className="text-sm">{grupo.name}</span>
+                          </label>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">Sin grupos disponibles</p>
+                      )}
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -232,10 +226,7 @@ export default function EditUserPage({
                       </p>
                     </div>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -247,9 +238,7 @@ export default function EditUserPage({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={
-                    form.formState.isSubmitting || !form.formState.isDirty
-                  }
+                  disabled={form.formState.isSubmitting || !form.formState.isDirty}
                 >
                   {form.formState.isSubmitting && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

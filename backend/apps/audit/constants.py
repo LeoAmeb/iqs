@@ -1,2 +1,2 @@
 class Permissions:
-    VIEW = "audit.view"
+    VIEW = "audit.view_auditlog"

@@ -7,23 +7,19 @@ from apps.users.models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ["email", "first_name", "last_name", "role", "is_active", "is_superuser", "created_at"]
-    list_filter = ["is_active", "is_superuser", "role"]
+    list_display = ["email", "first_name", "last_name", "is_active", "is_superuser", "created_at"]
+    list_filter = ["is_active", "is_superuser", "groups"]
     search_fields = ["email", "first_name", "last_name"]
     ordering = ["-created_at"]
     readonly_fields = ["created_at", "updated_at", "last_login", "date_joined"]
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "avatar")}),
         (
-            _("Personal info"),
-            {"fields": ("first_name", "last_name", "avatar")},
-        ),
-        (
-            _("Role & permissions"),
+            _("Grupos y permisos"),
             {
                 "fields": (
-                    "role",
                     "is_active",
                     "is_staff",
                     "is_superuser",
@@ -32,10 +28,7 @@ class UserAdmin(BaseUserAdmin):
                 )
             },
         ),
-        (
-            _("Important dates"),
-            {"fields": ("last_login", "date_joined", "created_at", "updated_at")},
-        ),
+        (_("Fechas importantes"), {"fields": ("last_login", "date_joined", "created_at", "updated_at")}),
     )
 
     add_fieldsets = (
@@ -49,7 +42,7 @@ class UserAdmin(BaseUserAdmin):
                     "last_name",
                     "password1",
                     "password2",
-                    "role",
+                    "groups",
                     "is_active",
                     "is_staff",
                 ),
@@ -57,5 +50,4 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    # The base class uses 'username' — override to use 'email'
     filter_horizontal = ("groups", "user_permissions")

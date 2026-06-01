@@ -39,11 +39,7 @@ class UserViewSet(ModelViewSet):
     ordering = ["-created_at"]
 
     def get_queryset(self):
-        return (
-            User.objects.select_related("role")
-            .prefetch_related("role__permissions")
-            .all()
-        )
+        return User.objects.prefetch_related("groups__permissions").all()
 
     def get_serializer_class(self):
         if self.action == "create":

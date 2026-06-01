@@ -1,4 +1,4 @@
-from django.apps import apps as django_apps
+from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -6,23 +6,13 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from apps.users.models import User
 
 
-def _role_queryset():
-    Role = django_apps.get_model("roles", "Role")
-    return Role.objects.all()
-
-
-class RoleMinimalSerializer(serializers.Serializer):
-    """Minimal role representation used when nesting inside UserSerializer."""
-
+class GrupoMinimalSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
-    slug = serializers.CharField(read_only=True)
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Full user representation for admin views."""
-
-    role = RoleMinimalSerializer(read_only=True)
+    groups = GrupoMinimalSerializer(many=True, read_only=True)
     full_name = serializers.CharField(read_only=True)
 
     class Meta:
@@ -33,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "full_name",
-            "role",
+            "groups",
             "is_active",
             "is_superuser",
             "avatar",
@@ -45,11 +35,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserMeSerializer(serializers.ModelSerializer):
     """
-    Representation of the currently authenticated user.
-    Includes the list of permission codenames derived from the user's role.
+    Representación del usuario autenticado.
+    Incluye los permisos derivados de sus grupos en formato 'app_label.codename'.
     """
 
-    role = RoleMinimalSerializer(read_only=True)
+    groups = GrupoMinimalSerializer(many=True, read_only=True)
     full_name = serializers.CharField(read_only=True)
     permissions = serializers.SerializerMethodField()
 
@@ -61,7 +51,7 @@ class UserMeSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "full_name",
-            "role",
+            "groups",
             "is_active",
             "is_superuser",
             "avatar",
@@ -74,25 +64,21 @@ class UserMeSerializer(serializers.ModelSerializer):
     def get_permissions(self, obj: User) -> list[str]:
         if obj.is_superuser:
             return ["*"]
-        if obj.role is None:
-            return []
-        return list(obj.role.permissions.values_list("codename", flat=True))
+        return sorted(obj.get_all_permissions())
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    """Serializer for creating a new user (admin endpoint)."""
-
     password = serializers.CharField(
         write_only=True,
         required=True,
         style={"input_type": "password"},
         validators=[validate_password],
     )
-    role_id = serializers.PrimaryKeyRelatedField(
-        source="role",
-        queryset=_role_queryset(),
+    group_ids = serializers.PrimaryKeyRelatedField(
+        source="groups",
+        queryset=Group.objects.all(),
+        many=True,
         required=False,
-        allow_null=True,
     )
 
     class Meta:
@@ -102,7 +88,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "password",
-            "role_id",
+            "group_ids",
             "is_active",
         ]
 
@@ -113,17 +99,20 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data: dict) -> User:
+        groups = validated_data.pop("groups", [])
         password = validated_data.pop("password")
         user = User(**validated_data)
         user.set_password(password)
         user.save()
+        if groups:
+            user.groups.set(groups)
         return user
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
-    Extends the default JWT payload with user-specific claims so the frontend
-    does not need a separate /auth/user/ call after login.
+    Extiende el payload JWT con datos del usuario para evitar
+    una llamada adicional a /auth/user/ después del login.
     """
 
     @classmethod
@@ -132,26 +121,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["email"] = user.email
         token["full_name"] = user.full_name
         token["is_superuser"] = user.is_superuser
-        token["role"] = user.role.slug if user.role else None
+        token["groups"] = list(user.groups.values_list("name", flat=True))
         if user.is_superuser:
             token["permissions"] = ["*"]
-        elif user.role:
-            token["permissions"] = list(
-                user.role.permissions.values_list("codename", flat=True)
-            )
         else:
-            token["permissions"] = []
+            token["permissions"] = sorted(user.get_all_permissions())
         return token
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
-    """Serializer for updating a user (no password change here)."""
-
-    role_id = serializers.PrimaryKeyRelatedField(
-        source="role",
-        queryset=_role_queryset(),
+    group_ids = serializers.PrimaryKeyRelatedField(
+        source="groups",
+        queryset=Group.objects.all(),
+        many=True,
         required=False,
-        allow_null=True,
     )
 
     class Meta:
@@ -159,7 +142,16 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = [
             "first_name",
             "last_name",
-            "role_id",
+            "group_ids",
             "is_active",
             "avatar",
         ]
+
+    def update(self, instance: User, validated_data: dict) -> User:
+        groups = validated_data.pop("groups", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if groups is not None:
+            instance.groups.set(groups)
+        return instance

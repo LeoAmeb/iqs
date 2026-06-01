@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Plus, Search, Edit, ToggleLeft, ToggleRight, UserX } from "lucide-react"
 import { useUsers, useCreateUser, useToggleUserActive } from "@/hooks/use-users"
-import { useRoles } from "@/hooks/use-roles"
+import { useGrupos } from "@/hooks/use-grupos"
 import { useHasPermission } from "@/hooks/use-has-permission"
 import { PERMISSIONS } from "@/lib/permissions"
 import { Button } from "@/components/ui/button"
@@ -36,13 +36,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -56,7 +50,7 @@ const createUserSchema = z.object({
   last_name: z.string().min(1, "Los apellidos son requeridos"),
   email: z.string().email("Correo electrónico inválido"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-  role_id: z.string().optional(),
+  group_ids: z.array(z.number()),
 })
 
 type CreateUserValues = z.infer<typeof createUserSchema>
@@ -84,7 +78,7 @@ function UserTableSkeleton() {
 
 function CreateUserDialog() {
   const [open, setOpen] = useState(false)
-  const { data: rolesData } = useRoles()
+  const { data: gruposData } = useGrupos()
   const createUser = useCreateUser()
 
   const form = useForm<CreateUserValues>({
@@ -94,7 +88,7 @@ function CreateUserDialog() {
       last_name: "",
       email: "",
       password: "",
-      role_id: undefined,
+      group_ids: [],
     },
   })
 
@@ -104,7 +98,7 @@ function CreateUserDialog() {
       last_name: values.last_name,
       email: values.email,
       password: values.password,
-      ...(values.role_id && values.role_id !== "none" ? { role_id: Number(values.role_id) } : {}),
+      group_ids: values.group_ids,
     } as Parameters<typeof createUser.mutateAsync>[0])
     setOpen(false)
     form.reset()
@@ -180,25 +174,34 @@ function CreateUserDialog() {
             />
             <FormField
               control={form.control}
-              name="role_id"
+              name="group_ids"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rol (opcional)</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value ?? "none"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar rol" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="none">Sin rol (opcional)</SelectItem>
-                      {rolesData?.results.map((role) => (
-                        <SelectItem key={role.id} value={String(role.id)}>
-                          {role.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Grupos (opcional)</FormLabel>
+                  <div className="flex flex-col gap-2 rounded-md border p-3">
+                    {gruposData?.results.length ? (
+                      gruposData.results.map((grupo) => (
+                        <label
+                          key={grupo.id}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <Checkbox
+                            checked={field.value.includes(grupo.id)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.onChange([...field.value, grupo.id])
+                              } else {
+                                field.onChange(field.value.filter((id) => id !== grupo.id))
+                              }
+                            }}
+                          />
+                          <span className="text-sm">{grupo.name}</span>
+                        </label>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Sin grupos disponibles</p>
+                    )}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -325,7 +328,7 @@ export default function UsersPage() {
               <TableHead className="w-12"></TableHead>
               <TableHead>Correo</TableHead>
               <TableHead>Nombre</TableHead>
-              <TableHead>Rol</TableHead>
+              <TableHead>Grupos</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
@@ -360,10 +363,14 @@ export default function UsersPage() {
                   <TableCell className="text-sm">{user.email}</TableCell>
                   <TableCell className="font-medium">{user.full_name}</TableCell>
                   <TableCell>
-                    {user.role ? (
-                      <Badge variant="secondary">{user.role.name}</Badge>
+                    {user.groups.length > 0 ? (
+                      <div className="flex flex-wrap gap-1">
+                        {user.groups.map((g) => (
+                          <Badge key={g.id} variant="secondary">{g.name}</Badge>
+                        ))}
+                      </div>
                     ) : (
-                      <span className="text-xs text-muted-foreground">Sin rol</span>
+                      <span className="text-xs text-muted-foreground">Sin grupos</span>
                     )}
                   </TableCell>
                   <TableCell>

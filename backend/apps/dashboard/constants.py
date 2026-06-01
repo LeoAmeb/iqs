@@ -1,2 +1,2 @@
 class Permissions:
-    VIEW = "dashboard.view"
+    VIEW = "dashboard.view_dashboard"

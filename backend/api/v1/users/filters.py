@@ -6,8 +6,8 @@ from apps.users.models import User
 class UserFilter(django_filters.FilterSet):
     email = django_filters.CharFilter(lookup_expr="icontains")
     is_active = django_filters.BooleanFilter()
-    role_id = django_filters.NumberFilter(field_name="role__id")
+    group_id = django_filters.NumberFilter(field_name="groups__id")
 
     class Meta:
         model = User
-        fields = ["email", "is_active", "role_id"]
+        fields = ["email", "is_active", "group_id"]

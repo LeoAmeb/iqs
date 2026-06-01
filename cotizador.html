@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IdeasQSolucionan</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+:root{
+  --bg:#fafafa;--surface:#f4f4f4;--surface2:#ececec;
+  --border:#e2e2e2;--text:#0f0f0f;--text-dim:#5c5c5c;--text-muted:#a0a0a0;
+  --green:#1a6b3a;--green-bg:#edf7f1;
+  --red:#b91c1c;--red-bg:#fef2f2;
+  --amber:#92400e;--amber-bg:#fffbeb;
+  --blue:#1e40af;--blue-bg:#eff6ff;
+  --yellow:#b45309;--yellow-bg:#fefce8;
+  --purple:#6d28d9;--purple-bg:#f5f3ff;
+  --c-logos:#5b21b6;--c-logos-bg:#f5f3ff;
+  --c-neon:#be185d;--c-neon-bg:#fdf2f8;
+  --c-toppers:#c2410c;--c-toppers-bg:#fff7ed;
+  --c-mdf:#166534;--c-mdf-bg:#f0fdf4;
+  --c-termos:#075985;--c-termos-bg:#f0f9ff;
+  --c-displays:#9d174d;--c-displays-bg:#fdf2f8;
+  --c-grabado:#92400e;--c-grabado-bg:#fffbeb;
+  --c-corte:#134e4a;--c-corte-bg:#f0fdfa;
+  --c-pers:#374151;--c-pers-bg:#f9fafb;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;max-width:480px;margin:0 auto;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:100}
+.folio-badge{font-size:11px;background:var(--surface);color:var(--text-dim);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-weight:500}
+.nav-tabs{display:flex;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:56px;z-index:90}
+.nav-tab{flex:1;padding:10px 4px;border:none;background:transparent;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.nav-tab.active{color:#111;border-bottom-color:#111;font-weight:600}
+.cat-scroll{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;border-bottom:1px solid var(--border);background:#fff;scrollbar-width:none;position:sticky;top:97px;z-index:88}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-pill{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer;transition:all .15s;flex-shrink:0}
+.cat-pill i{font-size:13px}
+.cat-pill[data-cat="logos"].active{background:var(--c-logos);color:#fff;border-color:var(--c-logos)}
+.cat-pill[data-cat="neon"].active{background:var(--c-neon);color:#fff;border-color:var(--c-neon)}
+.cat-pill[data-cat="toppers"].active{background:var(--c-toppers);color:#fff;border-color:var(--c-toppers)}
+.cat-pill[data-cat="mdf"].active{background:var(--c-mdf);color:#fff;border-color:var(--c-mdf)}
+.cat-pill[data-cat="termos"].active{background:var(--c-termos);color:#fff;border-color:var(--c-termos)}
+.cat-pill[data-cat="displays"].active{background:var(--c-displays);color:#fff;border-color:var(--c-displays)}
+.cat-pill[data-cat="grabado"].active{background:var(--c-grabado);color:#fff;border-color:var(--c-grabado)}
+.cat-pill[data-cat="corte"].active{background:var(--c-corte);color:#fff;border-color:var(--c-corte)}
+.cat-pill[data-cat="personalizado"].active{background:var(--c-pers);color:#fff;border-color:var(--c-pers)}
+.action-bar{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:137px;z-index:87}
+.btn-p{flex:1;padding:9px;background:#111;color:#fff;border:none;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.btn-s{padding:9px 14px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:15px}
+.main{padding:16px;padding-bottom:32px}
+.section-title{font-size:17px;font-weight:700;letter-spacing:-0.3px;margin-bottom:2px}
+.section-sub{color:var(--text-dim);font-size:12px;margin-bottom:16px;line-height:1.5}
+#form_logos .section-title{color:var(--c-logos)}
+#form_neon .section-title{color:var(--c-neon)}
+#form_toppers .section-title{color:var(--c-toppers)}
+#form_mdf .section-title{color:var(--c-mdf)}
+#form_termos .section-title{color:var(--c-termos)}
+#form_displays .section-title{color:var(--c-displays)}
+#form_grabado .section-title{color:var(--c-grabado)}
+#form_corte .section-title{color:var(--c-corte)}
+#form_personalizado .section-title{color:var(--c-pers)}
+#form_logos{background:var(--c-logos-bg);border-radius:12px;padding:14px}
+#form_neon{background:var(--c-neon-bg);border-radius:12px;padding:14px}
+#form_toppers{background:var(--c-toppers-bg);border-radius:12px;padding:14px}
+#form_mdf{background:var(--c-mdf-bg);border-radius:12px;padding:14px}
+#form_termos{background:var(--c-termos-bg);border-radius:12px;padding:14px}
+#form_displays{background:var(--c-displays-bg);border-radius:12px;padding:14px}
+#form_grabado{background:var(--c-grabado-bg);border-radius:12px;padding:14px}
+#form_corte{background:var(--c-corte-bg);border-radius:12px;padding:14px}
+#form_personalizado{background:var(--c-pers-bg);border-radius:12px;padding:14px}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+label{font-size:11px;font-weight:500;color:var(--text-dim);letter-spacing:.3px;text-transform:uppercase}
+input,select,textarea{background:#fff;border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;outline:none;transition:border-color .12s;width:100%;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:#999}
+textarea{resize:none;min-height:68px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toggle-group{display:flex;gap:6px;flex-wrap:wrap}
+.toggle-btn{padding:7px 11px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;transition:all .12s}
+.toggle-btn.active{background:#111;border-color:#111;color:#fff;font-weight:500}
+.info-box{background:#fff;border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text-dim);margin-bottom:4px;border:1px solid var(--border)}
+.desglose-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:14px}
+.desglose-title{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.d-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.d-row:last-child{border-bottom:none}
+.d-row span:first-child{color:var(--text-dim)}
+.d-row span:last-child{font-weight:500}
+.d-row.total{border-top:1px solid #111;border-bottom:none;margin-top:6px;padding-top:10px}
+.d-row.total span:first-child{color:var(--text);font-weight:600}
+.d-row.total span:last-child{font-weight:700;font-size:22px}
+.margen-wrap{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px}
+.margen-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px}
+.margen-bar{height:5px;background:var(--surface2);border-radius:100px;overflow:hidden}
+.margen-fill{height:100%;border-radius:100px;transition:width .3s ease}
+.margen-bottom{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:6px}
+.seccion-tab{display:none}
+.seccion-tab.active{display:block}
+.cat-form{display:none}
+.cat-form.active{display:block}
+/* PEDIDOS */
+.pedido-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.pedido-nombre{font-size:14px;font-weight:600}
+.pedido-cat{font-size:11px;color:var(--text-muted);margin-top:1px}
+.pedido-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.pedido-fecha{font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:4px}
+.sb{font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px}
+.s-pendiente{background:var(--yellow-bg);color:var(--yellow)}
+.s-listo{background:var(--blue-bg);color:var(--blue)}
+.s-proximo{background:var(--red-bg);color:var(--red)}
+.s-urgente{background:var(--purple-bg);color:var(--purple)}
+.s-entregado{background:var(--green-bg);color:var(--green)}
+.s-cancelado{background:var(--surface2);color:var(--text-muted)}
+/* RECIBO inline */
+.recibo-area{display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:12px}
+.recibo-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f5;font-size:12px}
+.recibo-row span:first-child{color:#888}
+.recibo-total{background:#111;color:#fff;border-radius:7px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;margin:8px 0}
+/* MDF bases */
+.bases-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+.bases-item select{flex:1;padding:6px 8px;font-size:13px}
+.bases-item input{width:64px;padding:6px 8px;font-size:13px;text-align:center}
+.bases-item button{background:var(--red-bg);color:var(--red);border:none;border-radius:6px;padding:5px 9px;cursor:pointer;font-size:13px}
+/* MODALES */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:flex-end;justify-content:center}
+.modal.show{display:flex}
+.sheet{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;animation:su .25s ease}
+@keyframes su{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.sheet-hdr{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff}
+.sheet-hdr span{font-size:15px;font-weight:700}
+.sheet-x{background:var(--surface2);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#666}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:100px;font-size:10px;font-weight:600}
+.badge-ok{background:var(--green-bg);color:var(--green)}
+.badge-warn{background:var(--amber-bg);color:var(--amber)}
+.badge-bad{background:var(--red-bg);color:var(--red)}
+.empty-state{text-align:center;color:var(--text-muted);font-size:12px;padding:32px 16px}
+.cv-body{padding:16px}
+.cv-to{background:var(--surface);border-radius:8px;padding:10px 12px;margin-bottom:14px}
+.cv-to-lbl{font-size:10px;font-weight:500;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.cv-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px}
+.cv-table th{text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);padding:0 0 7px;font-weight:500}
+.cv-table td{padding:8px 0;border-bottom:1px solid var(--surface2);color:#333}
+.cv-table td:last-child{text-align:right;font-weight:600}
+.cv-total{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;background:#111;border-radius:8px;color:#fff;margin-bottom:10px}
+.cv-total span:first-child{font-size:13px;font-weight:500}
+.cv-total span:last-child{font-size:22px;font-weight:700}
+.btn-wa{display:block;width:100%;padding:12px;background:#25D366;color:#fff;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;margin-bottom:8px}
+.btn-print{display:block;width:100%;padding:12px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer}
+.pm-body{padding:16px}
+.pm-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.pm-row span:first-child{color:var(--text-dim)}
+.pago-toggle{display:flex;gap:8px;margin-bottom:10px}
+.pago-btn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;text-align:center}
+.pago-btn.active{background:#111;border-color:#111;color:#fff}
+.btn-confirm{width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
+.btn-entregado{width:100%;padding:10px;background:var(--green-bg);color:var(--green);border:1px solid var(--green);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px}
+.btn-cancelar{width:100%;padding:10px;background:var(--red-bg);color:var(--red);border:1px solid var(--red);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px}
+.cfg-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border);margin-top:14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-dim);letter-spacing:.5px;text-transform:uppercase}
+.cfg-body{display:none}.cfg-body.open{display:block}
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.dash-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px}
+.dash-card.full{grid-column:1/-1}
+.dash-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
+.dash-val{font-size:24px;font-weight:700;letter-spacing:-0.5px}
+.dash-sub{font-size:11px;color:var(--text-dim);margin-top:2px}
+.bar-wrap{height:6px;background:var(--surface2);border-radius:100px;overflow:hidden;margin:8px 0 4px}
+.bar-fill{height:100%;border-radius:100px;transition:width .4s ease}
+.cat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.cat-row:last-child{border-bottom:none}
+@media print{
+  body *{visibility:hidden}
+  #clientModal{display:flex!important;visibility:visible;position:fixed;inset:0;background:white;align-items:flex-start}
+  #clientModal *{visibility:visible}
+  #clientModal .sheet{max-height:none;border-radius:0;width:100%;overflow:visible}
+  #clientModal .sheet-x,#clientModal .btn-print,#clientModal .btn-wa,#clientModal .form-group{display:none!important}
+  @page{margin:10mm;size:A4}
+}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <svg width="210" height="38" viewBox="0 0 210 38" xmlns="http://www.w3.org/2000/svg">
+      <text x="2" y="24" font-family="Arial,sans-serif" font-size="20" font-weight="300" letter-spacing="1" fill="#111">IDEAS</text>
+      <text x="72" y="24" font-family="Arial,sans-serif" font-size="20" font-weight="800" letter-spacing="0.5" fill="#111">QSOLUCIONAN</text>
+      <text x="2" y="36" font-family="Arial,sans-serif" font-size="7.5" font-weight="600" fill="#777" letter-spacing="2.5">|CORTE Y GRABADO CNC|</text>
+    </svg>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span id="folioHdr" class="folio-badge">#0001</span>
+    <button onclick="showHist()" style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 10px;cursor:pointer;color:var(--text-dim)"><i class="ti ti-history" style="font-size:14px"></i></button>
+  </div>
+</header>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="setNav('cotizador',this)"><i class="ti ti-calculator" style="font-size:12px;margin-right:3px"></i>Cotizador</button>
+  <button class="nav-tab" onclick="setNav('pedidos',this)"><i class="ti ti-clipboard-list" style="font-size:12px;margin-right:3px"></i>Pedidos <span id="pedidos_badge" style="display:none;background:var(--red);color:#fff;border-radius:100px;padding:1px 5px;font-size:10px;margin-left:3px">0</span></button>
+  <button class="nav-tab" onclick="setNav('dashboard',this)"><i class="ti ti-chart-bar" style="font-size:12px;margin-right:3px"></i>Dashboard</button>
+</div>
+
+<!-- COTIZADOR -->
+<div id="sec_cotizador" class="seccion-tab active">
+<div class="cat-scroll">
+  <button class="cat-pill active" data-cat="logos" onclick="setCat('logos',this)"><i class="ti ti-tag"></i>Logos</button>
+  <button class="cat-pill" data-cat="neon" onclick="setCat('neon',this)"><i class="ti ti-bulb"></i>Neon</button>
+  <button class="cat-pill" data-cat="toppers" onclick="setCat('toppers',this)"><i class="ti ti-cake"></i>Toppers</button>
+  <button class="cat-pill" data-cat="mdf" onclick="setCat('mdf',this)"><i class="ti ti-cut"></i>MDF</button>
+  <button class="cat-pill" data-cat="termos" onclick="setCat('termos',this)"><i class="ti ti-coffee"></i>Termos</button>
+  <button class="cat-pill" data-cat="displays" onclick="setCat('displays',this)"><i class="ti ti-layout-board"></i>Displays</button>
+  <button class="cat-pill" data-cat="grabado" onclick="setCat('grabado',this)"><i class="ti ti-writing"></i>Grabado</button>
+  <button class="cat-pill" data-cat="corte" onclick="setCat('corte',this)"><i class="ti ti-scissors"></i>Corte</button>
+  <button class="cat-pill" data-cat="personalizado" onclick="setCat('personalizado',this)"><i class="ti ti-adjustments-horizontal"></i>Libre</button>
+</div>
+<div class="action-bar">
+  <button class="btn-p" onclick="saveQuote()"><i class="ti ti-plus" style="font-size:13px;margin-right:4px"></i>Guardar cotización</button>
+  <button class="btn-s" onclick="showClientView()"><i class="ti ti-eye"></i></button>
+</div>
+<div class="main">
+
+<!-- LOGOS -->
+<div id="form_logos" class="cat-form active">
+  <div class="section-title">Logo Acrílico</div>
+  <div class="section-sub">Con o sin base.</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="logos_cliente" placeholder="Ej: Cafetería El Sol" oninput="recalc()"></div>
+  <div class="form-group"><label>Tipo</label>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="logos_t_base" onclick="setLogoTipo('base')">Con base</button>
+      <button class="toggle-btn" id="logos_t_sinbase_a" onclick="setLogoTipo('sinbase_a')">Sin base estándar</button>
+      <button class="toggle-btn" id="logos_t_sinbase_b" onclick="setLogoTipo('sinbase_b')">Sin base premium</button>
+    </div>
+  </div>
+  <div id="logos_sec_base">
+    <div class="row2">
+      <div class="form-group"><label>Tamaño</label>
+        <select id="logos_tamano" onchange="recalc()">
+          <option value="1590">50cm — $1,590</option>
+          <option value="2090">60cm — $2,090</option>
+          <option value="3490">80cm — $3,490</option>
+          <option value="3990">90cm — $3,990</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Cantidad</label><input type="number" id="logos_cantidad" value="1" min="1" oninput="recalc()"></div>
+    </div>
+    <div class="row2">
+      <div class="form-group"><label>Color base</label>
+        <select id="logos_color_base">
+          <option>Transparente</option><option>Negro</option><option>Blanco</option><option>Blanco lechoso</option>
+          <option>Rojo</option><option>Amarillo</option><option>Verde</option><option>Oro</option><option>Plata</option>
+          <option>Rose gold</option><option>Naranja</option><option>Celeste</option><option>Rosa</option><option>Fucsia</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Color diseño</label>
+        <select id="logos_color_diseno">
+          <option>Oro</option><option>Plata</option><option>Transparente</option><option>Negro</option><option>Blanco</option>
+          <option>Rose gold</option><option>Naranja</option><option>Celeste</option><option>Rosa</option><option>Fucsia</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Chapetones</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="logos_chap_plateado" onclick="setLogosChap('plateado')">Plateados (incluidos)</button>
+        <button class="toggle-btn" id="logos_chap_dorado" onclick="setLogosChap('dorado')">Dorados +$100</button>
+      </div>
+    </div>
+    <div class="form-group"><label>Extras</label>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="logos_tercera" onclick="toggleTercera()">3ra capa +$350</button>
+        <button class="toggle-btn" id="logos_led" onclick="toggleLED()">Iluminación LED</button>
+        <button class="toggle-btn" id="logos_instalacion" onclick="tog('logos_instalacion')">Instalación +$300</button>
+        <button class="toggle-btn" id="logos_urgente" onclick="tog('logos_urgente')">Urgente +20%</button>
+        <button class="toggle-btn" id="logos_mismodia" onclick="tog('logos_mismodia')">Mismo día +50%</button>
+      </div>
+    </div>
+    <div id="logos_tercera_wrap" style="display:none">
+      <div class="form-group"><label>Color 3ra capa</label>
+        <select id="logos_color_tercera"><option>Oro</option><option>Plata</option><option>Transparente</option><option>Negro</option><option>Blanco</option></select>
+      </div>
+    </div>
+    <div id="logos_led_wrap" style="display:none">
+      <div class="form-group"><label>Color LED</label>
+        <select id="logos_color_led"><option>Blanco frío</option><option>Blanco cálido</option><option>Azul</option><option>Rosa</option><option>Morado</option><option>Rojo</option><option>Verde</option></select>
+      </div>
+    </div>
+  </div>
+  <div id="logos_sec_sinbase" style="display:none">
+    <div class="row2">
+      <div class="form-group"><label>Ancho (cm)</label><input type="number" id="logos_ancho" value="100" oninput="recalc()"></div>
+      <div class="form-group"><label>Alto (cm)</label><input type="number" id="logos_alto" value="40" oninput="recalc()"></div>
+    </div>
+    <div class="form-group"><label>Cantidad</label><input type="number" id="logos_sb_cantidad" value="1" min="1" oninput="recalc()"></div>
+    <div id="logos_sb_info" class="info-box">—</div>
+    <div class="form-group"><label>Extras</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="logos_instalacion_sb" onclick="tog('logos_instalacion_sb')">Instalación +$400</button>
+        <button class="toggle-btn" id="logos_urgente_sb" onclick="tog('logos_urgente_sb')">Urgente +20%</button>
+        <button class="toggle-btn" id="logos_mismodia_sb" onclick="tog('logos_mismodia_sb')">Mismo día +50%</button>
+      </div>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="logos_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="logos_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="logos_notas" placeholder="Colores, detalles..."></textarea></div>
+  <div id="desglose_logos"></div>
+</div>
+
+<!-- NEON -->
+<div id="form_neon" class="cat-form">
+  <div class="section-title">Letrero Neon</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="neon_cliente" placeholder="Ej: Restaurante La Brasa" oninput="recalc()"></div>
+  <div class="row2">
+    <div class="form-group"><label>Tipo</label>
+      <select id="neon_tipo" onchange="recalc()">
+        <option value="1050">Número — $1,050</option>
+        <option value="1700">Frase simple — $1,700</option>
+        <option value="2800">Complejo — $2,800</option>
+        <option value="3900">Logo neon — $3,900</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Complejidad</label>
+      <select id="neon_complejidad" onchange="recalc()">
+        <option value="0">Normal</option><option value="400">Complejo +$400</option><option value="600">Muy complejo +$600</option>
+      </select>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Color principal</label>
+      <select id="neon_color"><option>Blanco frío</option><option>Blanco cálido</option><option>Azul</option><option>Rosa</option><option>Morado</option><option>Rojo</option><option>Verde</option><option>Amarillo</option><option>Celeste</option><option>Naranja</option></select>
+    </div>
+    <div class="form-group"><label>Cantidad</label><input type="number" id="neon_cantidad" value="1" min="1" oninput="recalc()"></div>
+  </div>
+  <div class="form-group"><label>Metraje</label>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="neon_m_normal" onclick="setMetraje('normal')">Hasta 5m</button>
+      <button class="toggle-btn" id="neon_m_medio" onclick="setMetraje('medio')">5–10m +$250</button>
+      <button class="toggle-btn" id="neon_m_largo" onclick="setMetraje('largo')">+10m +$350</button>
+    </div>
+  </div>
+  <div class="form-group"><label>Chapetones</label>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="neon_c_plateado" onclick="setNeonChap('plateado')">Plateados (incluidos)</button>
+      <button class="toggle-btn" id="neon_c_dorado" onclick="setNeonChap('dorado')">Dorados +$100</button>
+    </div>
+  </div>
+  <div class="form-group"><label>Extras</label>
+    <div class="toggle-group">
+      <button class="toggle-btn" id="neon_apagador" onclick="tog('neon_apagador')">Apagador +$120</button>
+      <button class="toggle-btn" id="neon_instalacion" onclick="tog('neon_instalacion')">Instalación +$300</button>
+      <button class="toggle-btn" id="neon_urgente" onclick="tog('neon_urgente')">Urgente +20%</button>
+      <button class="toggle-btn" id="neon_mismodia" onclick="tog('neon_mismodia')">Mismo día +50%</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="neon_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="neon_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="neon_notas" placeholder="Medidas, fuente, instalación..."></textarea></div>
+  <div id="desglose_neon"></div>
+</div>
+
+<!-- TOPPERS -->
+<div id="form_toppers" class="cat-form">
+  <div class="section-title">Toppers</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="toppers_cliente" placeholder="Ej: Pastelería Dulce" oninput="recalc()"></div>
+  <div class="row2">
+    <div class="form-group"><label>Tamaño</label>
+      <select id="toppers_tamano" onchange="recalc()"><option value="15">15 cm</option><option value="12">10–12 cm</option></select>
+    </div>
+    <div class="form-group"><label>Cantidad</label><input type="number" id="toppers_cantidad" value="1" min="1" oninput="recalc()"></div>
+  </div>
+  <div class="form-group"><label>Tipo de cliente</label>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="toppers_nuevo" onclick="setToppersCliente('nuevo')">Cliente nuevo</button>
+      <button class="toggle-btn" id="toppers_frecuente" onclick="setToppersCliente('frecuente')">Cliente frecuente</button>
+    </div>
+  </div>
+  <div class="form-group"><label>Pieza adicional pequeña</label>
+    <div class="toggle-group">
+      <button class="toggle-btn" id="toppers_extra50" onclick="setToppersExtra(50)">+$50</button>
+      <button class="toggle-btn" id="toppers_extra60" onclick="setToppersExtra(60)">+$60</button>
+    </div>
+  </div>
+  <div class="form-group"><label>Color del topper</label>
+    <select id="toppers_color">
+      <option>Oro</option><option>Plata</option><option>Transparente</option><option>Negro</option><option>Blanco</option>
+      <option>Blanco lechoso</option><option>Rosa</option><option>Rojo</option><option>Azul</option><option>Verde</option>
+      <option>Celeste</option><option>Fucsia</option><option>Naranja</option><option>Morado</option><option>Rose gold</option>
+    </select>
+  </div>
+  <div class="form-group"><label>Nombre / texto del topper</label>
+    <input type="text" id="toppers_nombre" placeholder="Ej: Estefany, Feliz Cumpleaños..." oninput="recalc()">
+  </div>
+  <div class="form-group"><label>Extras</label>
+    <div class="toggle-group"><button class="toggle-btn" id="toppers_urgente" onclick="tog('toppers_urgente')">Urgente +20%</button></div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="toppers_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="toppers_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="toppers_notas" placeholder="Referencias adicionales..."></textarea></div>
+  <div id="desglose_toppers"></div>
+</div>
+
+<!-- MDF -->
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="toppers_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="toppers_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="toppers_notas" placeholder="Referencias adicionales..."></textarea></div>
+<div id="form_mdf" class="cat-form">
+  <div class="section-title">Corte MDF</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="mdf_cliente" placeholder="Ej: Decoraciones Fiesta" oninput="recalc()"></div>
+  <div class="form-group"><label>Tipo</label>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="mdf_t_nombres" onclick="setMdfTipo('nombres')">Letras/Nombres</button>
+      <button class="toggle-btn" id="mdf_t_bases" onclick="setMdfTipo('bases')">Bases Pastel</button>
+      <button class="toggle-btn" id="mdf_t_llaveros" onclick="setMdfTipo('llaveros')">Llaveros</button>
+      <button class="toggle-btn" id="mdf_t_manual" onclick="setMdfTipo('manual')">Manual</button>
+    </div>
+  </div>
+  <div id="mdf_sec_nombres">
+    <div class="row2">
+      <div class="form-group"><label>Tamaño</label>
+        <select id="mdf_nombres_tam" onchange="recalc()"><option value="150">60cm — $150</option><option value="260">80cm — $260</option></select>
+      </div>
+      <div class="form-group"><label>Cantidad</label><input type="number" id="mdf_nombres_cant" value="1" min="1" oninput="recalc()"></div>
+    </div>
+    <div class="form-group"><label>Acabado</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="mdf_natural" onclick="setAcabado('natural')">Natural</button>
+        <button class="toggle-btn" id="mdf_pintado" onclick="setAcabado('pintado')">Pintado +$100</button>
+      </div>
+    </div>
+    <div class="form-group"><label>Vinil (metros)</label><input type="number" id="mdf_vinil_metros" value="0" step="0.5" min="0" oninput="recalc()"></div>
+    <div class="form-group"><label>Extras</label>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="mdf_urgente" onclick="tog('mdf_urgente')">Urgente +20%</button>
+        <button class="toggle-btn" id="mdf_mismodia" onclick="tog('mdf_mismodia')">Mismo día +50%</button>
+      </div>
+    </div>
+  </div>
+  <!-- BASES PASTEL mejorado -->
+  <div id="mdf_sec_bases" style="display:none">
+    <div class="form-group"><label>Material</label>
+      <select id="mdf_bases_mat" onchange="recalc()">
+        <option value="3mm">MDF 3mm</option>
+        <option value="6mm">MDF 6mm natural</option>
+        <option value="6blanco">MDF 6mm blanco</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Piezas por medida</label>
+      <div id="bases_items"></div>
+      <button onclick="agregarBase()" style="width:100%;padding:8px;background:var(--c-mdf-bg);border:1px dashed var(--c-mdf);border-radius:8px;color:var(--c-mdf);font-family:Inter,sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-top:4px"><i class="ti ti-plus" style="font-size:12px"></i> Agregar medida</button>
+    </div>
+    <div id="mdf_bases_info" class="info-box">—</div>
+  </div>
+  <div id="mdf_sec_llaveros" style="display:none">
+    <div class="form-group"><label>Cantidad (mín. 20)</label><input type="number" id="mdf_llaveros_cant" value="20" min="1" oninput="recalc()"></div>
+    <div class="info-box">Llavero 5×5cm grabado · $15 c/u</div>
+  </div>
+  <div id="mdf_sec_manual" style="display:none">
+    <div class="row2">
+      <div class="form-group"><label>Precio ($)</label><input type="number" id="mdf_manual_precio" value="0" oninput="recalc()"></div>
+      <div class="form-group"><label>Costo estimado ($)</label><input type="number" id="mdf_manual_costo" value="0" oninput="recalc()"></div>
+    </div>
+    <div class="form-group"><label>Descripción</label><textarea id="mdf_manual_notas" placeholder="Ej: caja 47x47x20cm..."></textarea></div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="mdf_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="mdf_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="mdf_notas" placeholder="Detalles, colores..."></textarea></div>
+  <div id="desglose_mdf"></div>
+</div>
+
+<!-- TERMOS -->
+<div id="form_termos" class="cat-form">
+  <div class="section-title">Termos Grabados</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="termos_cliente" placeholder="Ej: Empresa ABC" oninput="recalc()"></div>
+  <div class="form-group"><label>¿El cliente trae su termo?</label>
+    <div class="toggle-group">
+      <button class="toggle-btn" id="termos_trae_si" onclick="setTermoPropio(true)">Sí, trae el suyo</button>
+      <button class="toggle-btn active" id="termos_trae_no" onclick="setTermoPropio(false)">No, nosotros incluimos</button>
+    </div>
+  </div>
+  <div id="termos_sec_propio" style="display:none">
+    <div class="form-group"><label>Tipo de grabado</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="termos_p_solo1" onclick="setTermoPropioTipo('solo_1')">1 diseño — $100</button>
+        <button class="toggle-btn" id="termos_p_solo2" onclick="setTermoPropioTipo('solo_2')">2 diseños — $150</button>
+        <button class="toggle-btn" id="termos_p_mc" onclick="setTermoPropioTipo('mayoreo_corto')">Mayoreo corto — $60</button>
+        <button class="toggle-btn" id="termos_p_mn" onclick="setTermoPropioTipo('mayoreo_nombre')">Mayoreo nombre — $80</button>
+      </div>
+    </div>
+  </div>
+  <div id="termos_sec_nuestro">
+    <div class="row2">
+      <div class="form-group"><label>Tamaño</label>
+        <select id="termos_tamano"><option value="20">20 oz</option><option value="30">30 oz</option></select>
+      </div>
+      <div class="form-group"><label>Color</label>
+        <select id="termos_color"><option>Negro</option><option>Blanco</option><option>Azul</option><option>Rosa</option><option>Celeste</option><option>Lila</option><option>Morado</option><option>Verde</option><option>Gris</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Descuento mayoreo</label>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="termos_m5" onclick="setMayoreo(5)">5+ piezas −10%</button>
+        <button class="toggle-btn" id="termos_m10" onclick="setMayoreo(10)">10+ piezas −15%</button>
+      </div>
+    </div>
+  </div>
+  <div class="form-group"><label>Cantidad</label><input type="number" id="termos_cantidad" value="1" min="1" oninput="recalc()"></div>
+  <div class="form-group"><label>Extras</label>
+    <div class="toggle-group"><button class="toggle-btn" id="termos_urgente" onclick="tog('termos_urgente')">Urgente +20%</button></div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="termos_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="termos_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="termos_notas" placeholder="Logo, diseño, detalles..."></textarea></div>
+  <div id="desglose_termos"></div>
+</div>
+
+<!-- DISPLAYS -->
+<div id="form_displays" class="cat-form">
+  <div class="section-title">Displays</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="displays_cliente" placeholder="Ej: Tienda Moda" oninput="recalc()"></div>
+  <div class="form-group"><label>Tipo</label>
+    <select id="displays_tipo" onchange="recalc()">
+      <option value="600">16cm estándar — $600</option><option value="700">20cm estándar — $700</option>
+      <option value="800">16cm premium — $800</option><option value="950">20cm premium — $950</option><option value="0">Personalizado</option>
+    </select>
+  </div>
+  <div id="displays_custom" style="display:none">
+    <div class="row2">
+      <div class="form-group"><label>Precio ($)</label><input type="number" id="displays_precio_libre" value="0" oninput="recalc()"></div>
+      <div class="form-group"><label>Costo ($)</label><input type="number" id="displays_costo_libre" value="0" oninput="recalc()"></div>
+    </div>
+  </div>
+  <div class="form-group"><label>Cantidad</label><input type="number" id="displays_cantidad" value="1" min="1" oninput="recalc()"></div>
+  <div class="form-group"><label>Extras</label>
+    <div class="toggle-group">
+      <button class="toggle-btn" id="displays_tercera" onclick="tog('displays_tercera')">3ra capa +$150</button>
+      <button class="toggle-btn" id="displays_urgente" onclick="tog('displays_urgente')">Urgente +30%</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="displays_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="displays_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="displays_notas" placeholder="Colores, QRs, detalles..."></textarea></div>
+  <div id="desglose_displays"></div>
+</div>
+
+<!-- GRABADO -->
+<div id="form_grabado" class="cat-form">
+  <div class="section-title">Grabado Láser</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="grabado_cliente" placeholder="Ej: Carpintería Martínez" oninput="recalc()"></div>
+  <div class="form-group"><label>Tipo de cliente</label>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="grabado_nuevo" onclick="setGrabadoCliente('nuevo')">Cliente nuevo</button>
+      <button class="toggle-btn" id="grabado_frecuente" onclick="setGrabadoCliente('frecuente')">Cliente frecuente</button>
+    </div>
+  </div>
+  <div class="form-group"><label>Tamaño</label>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="grabado_t_pequeno" onclick="setGrabadoTam('pequeno')">Pequeño</button>
+      <button class="toggle-btn" id="grabado_t_mediano" onclick="setGrabadoTam('mediano')">Mediano</button>
+      <button class="toggle-btn" id="grabado_t_grande" onclick="setGrabadoTam('grande')">Grande</button>
+    </div>
+  </div>
+  <div class="form-group"><label>Precio</label><div class="toggle-group" id="grabado_precios"></div></div>
+  <div class="form-group"><label>Cantidad</label><input type="number" id="grabado_cantidad" value="1" min="1" oninput="recalc()"></div>
+  <div class="form-group"><label>Objeto a grabar</label><input type="text" id="grabado_objeto" placeholder="Ej: tabla de madera, libreta..." oninput="recalc()"></div>
+  <div class="form-group"><label>Extras</label>
+    <div class="toggle-group">
+      <button class="toggle-btn" id="grabado_urgente" onclick="tog('grabado_urgente')">Urgente +20%</button>
+      <button class="toggle-btn" id="grabado_mismodia" onclick="tog('grabado_mismodia')">Mismo día +50%</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="grabado_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="grabado_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="grabado_notas" placeholder="Diseño, medidas..."></textarea></div>
+  <div id="desglose_grabado"></div>
+</div>
+
+<!-- CORTE -->
+<div id="form_corte" class="cat-form">
+  <div class="section-title">Corte Simple</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="corte_cliente" placeholder="Ej: Ferretería López" oninput="recalc()"></div>
+  <div class="form-group"><label>Material</label>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="corte_acrilico" onclick="setCortemat('acrilico')">Acrílico (×3)</button>
+      <button class="toggle-btn" id="corte_mdf" onclick="setCortemat('mdf')">MDF (×5)</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Ancho (cm)</label><input type="number" id="corte_ancho" value="30" oninput="recalc()"></div>
+    <div class="form-group"><label>Alto (cm)</label><input type="number" id="corte_alto" value="30" oninput="recalc()"></div>
+  </div>
+  <div class="form-group"><label>Cantidad</label><input type="number" id="corte_cantidad" value="1" min="1" oninput="recalc()"></div>
+  <div id="corte_info" class="info-box">—</div>
+  <div class="form-group"><label>Extras</label>
+    <div class="toggle-group">
+      <button class="toggle-btn" id="corte_urgente" onclick="tog('corte_urgente')">Urgente +20%</button>
+      <button class="toggle-btn" id="corte_mismodia" onclick="tog('corte_mismodia')">Mismo día +50%</button>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="corte_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="corte_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="corte_notas" placeholder="Color, grosor..."></textarea></div>
+  <div id="desglose_corte"></div>
+</div>
+
+<!-- PERSONALIZADO -->
+<div id="form_personalizado" class="cat-form">
+  <div class="section-title">Trabajo Libre</div>
+  <div class="form-group"><label>Cliente</label><input type="text" id="pers_cliente" placeholder="Ej: Proyecto Especial" oninput="recalc()"></div>
+  <div class="row2">
+    <div class="form-group"><label>Horas</label><input type="number" id="pers_horas" value="2" step="0.5" oninput="recalc()"></div>
+    <div class="form-group"><label>Materiales ($)</label><input type="number" id="pers_material" value="0" oninput="recalc()"></div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Extras ($)</label><input type="number" id="pers_extras" value="0" oninput="recalc()"></div>
+    <div class="form-group"><label>Margen extra (%)</label><input type="number" id="pers_margen" value="0" oninput="recalc()"></div>
+  </div>
+  <div class="row2">
+    <div class="form-group"><label>Fecha entrega</label><input type="date" id="pers_fecha_entrega"></div>
+    <div class="form-group"><label>Hora</label><input type="time" id="pers_hora_entrega"></div>
+  </div>
+  <div class="form-group"><label>Notas</label><textarea id="pers_notas" placeholder="Descripción, acuerdos..."></textarea></div>
+  <div id="desglose_personalizado"></div>
+  <div class="cfg-toggle" onclick="toggleCfg('cfg_body',this)"><span>Tarifas hora</span><i class="ti ti-chevron-down"></i></div>
+  <div class="cfg-body" id="cfg_body">
+    <div class="cfg-grid">
+      <div class="form-group"><label>Hora objetivo ($)</label><input type="number" id="cfg_hora_obj" value="230" onchange="recalc()"></div>
+      <div class="form-group"><label>Hora láser ($)</label><input type="number" id="cfg_hora_laser" value="30" onchange="recalc()"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- main -->
+</div><!-- sec_cotizador -->
+
+<!-- PEDIDOS -->
+<div id="sec_pedidos" class="seccion-tab">
+  <div style="padding:16px;padding-bottom:32px">
+    <div id="pedidos_resumen"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="section-title">Pedidos</div>
+      <div style="display:flex;gap:5px">
+        <button class="toggle-btn active" style="font-size:11px;padding:5px 9px" id="filt_todos" onclick="setFiltro('todos')">Todos</button>
+        <button class="toggle-btn" style="font-size:11px;padding:5px 9px" id="filt_activos" onclick="setFiltro('activos')">Activos</button>
+        <button class="toggle-btn" style="font-size:11px;padding:5px 9px" id="filt_entregados" onclick="setFiltro('entregados')">Entregados</button>
+      </div>
+    </div>
+    <div id="pedidos_list"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="sec_dashboard" class="seccion-tab">
+  <div style="padding:16px;padding-bottom:32px" id="dashboard_content"></div>
+</div>
+
+<!-- HISTORIAL -->
+<div id="histModal" class="modal">
+  <div class="sheet">
+    <div class="sheet-hdr"><span>Historial</span><button class="sheet-x" onclick="document.getElementById('histModal').classList.remove('show')">✕</button></div>
+    <div id="hist_list"></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 16px;font-size:12px;color:var(--text-dim)">
+      <span>Total: <strong id="hist_count">0</strong></span>
+      <span>Suma: <strong id="hist_total">$0</strong></span>
+    </div>
+  </div>
+</div>
+
+<!-- VISTA CLIENTE -->
+<div id="clientModal" class="modal">
+  <div class="sheet">
+    <div class="sheet-hdr">
+      <div>
+        <svg width="160" height="36" viewBox="0 0 160 36" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="20" font-family="Arial,sans-serif" font-size="16" font-weight="400" fill="#111">IDEAS</text>
+          <text x="46" y="20" font-family="Arial,sans-serif" font-size="16" font-weight="800" fill="#111">QSOLUCIONAN</text>
+          <text x="0" y="31" font-family="Arial,sans-serif" font-size="7" font-weight="600" fill="#555" letter-spacing="2">|CORTE Y GRABADO CNC|</text>
+        </svg>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div style="text-align:right">
+          <div id="cv_folio" style="font-size:14px;font-weight:700"></div>
+          <div id="cv_fecha" style="font-size:11px;color:#aaa"></div>
+        </div>
+        <button class="sheet-x" onclick="document.getElementById('clientModal').classList.remove('show')">✕</button>
+      </div>
+    </div>
+    <div class="cv-body">
+      <div class="cv-to"><div class="cv-to-lbl">Cotización para</div><div style="font-size:17px;font-weight:700" id="cv_cliente">—</div></div>
+      <table class="cv-table">
+        <thead><tr><th>Concepto</th><th style="text-align:right">Precio</th></tr></thead>
+        <tbody id="cv_items"></tbody>
+      </table>
+      <div id="cv_entrega" style="display:none;background:var(--surface);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:13px">
+        <i class="ti ti-calendar" style="font-size:13px;margin-right:4px;color:var(--text-dim)"></i>
+        <span style="color:var(--text-dim)">Entrega: </span><strong id="cv_entrega_txt"></strong>
+      </div>
+      <div class="cv-total"><span>Total (IVA incluido)</span><span id="cv_total">$0</span></div>
+      <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:12px">Cotización válida por 7 días · Precios en MXN · IVA incluido</div>
+      <div class="form-group"><label>WhatsApp (con lada)</label><input type="text" id="wa_tel" placeholder="521844000000"></div>
+      <button class="btn-wa" onclick="sendWhatsApp()"><i class="ti ti-brand-whatsapp" style="font-size:14px;margin-right:5px"></i>Enviar por WhatsApp</button>
+      <button class="btn-print" onclick="window.print()"><i class="ti ti-printer" style="font-size:13px;margin-right:5px"></i>Imprimir / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- PEDIDO MODAL -->
+<div id="pedidoModal" class="modal">
+  <div class="sheet">
+    <div class="sheet-hdr"><span id="pm_titulo">Pedido</span><button class="sheet-x" onclick="document.getElementById('pedidoModal').classList.remove('show')">✕</button></div>
+    <div class="pm-body" id="pm_body"></div>
+  </div>
+</div>
+
+<script>
+var currentCat='logos', logoTipo='base', neonMetraje='normal', neonChapeton='plateado', logosChapeton='plateado';
+var mayoreoTermo=0, toppersCliente='nuevo', toppersExtra=0;
+var mdfTipo='nombres', mdfAcabado='natural';
+var grabadoCliente='nuevo', grabadoTam='pequeno', grabadoPrecio=0;
+var corteMat='acrilico';
+var termoPropio=false, termoPropioTipo='solo_1';
+var folio=1, lastResult=null, filtroActual='todos';
+var historial=[], pedidos=[];
+var today=new Date().toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+// Bases MDF
+var MEDIDAS_MDF=['12x12','16x16','22x22','25x25','28x28','30x30'];
+var BASES_V={'3mm':{'12x12':10,'16x16':12,'22x22':16,'25x25':18,'28x28':22,'30x30':25},'6mm':{'12x12':18,'16x16':22,'22x22':28,'25x25':32,'28x28':40,'30x30':44},'6blanco':{'12x12':20,'16x16':24,'22x22':32,'25x25':36,'28x28':44,'30x30':50}};
+var BASES_MINI={'3mm':{'12x12':16,'16x16':18,'22x22':24,'25x25':28,'28x28':34,'30x30':38},'6mm':{'12x12':28,'16x16':34,'22x22':42,'25x25':48,'28x28':60,'30x30':66},'6blanco':{'12x12':30,'16x16':36,'22x22':48,'25x25':54,'28x28':66,'30x30':76}};
+var BASES_CM2={'12x12':144,'16x16':256,'22x22':484,'25x25':625,'28x28':784,'30x30':900};
+var MDF_CM2C={'3mm':0.006,'6mm':0.0084,'6blanco':0.0094};
+var basesItems=[{medida:'12x12',cant:1}];
+
+var GRABADO_PRECIOS={nuevo:{pequeno:[100,120],mediano:[150,200],grande:[250]},frecuente:{pequeno:[60,80],mediano:[100,150],grande:[180]}};
+var catLabels={logos:'Logo Acrílico',neon:'Letrero Neon',toppers:'Toppers',mdf:'Corte MDF',termos:'Termo',displays:'Display',grabado:'Grabado Láser',corte:'Corte Simple',personalizado:'Personalizado'};
+
+function g(id){return document.getElementById(id);}
+function v(id){return parseFloat(g(id)&&g(id).value)||0;}
+function isOn(id){return g(id)&&g(id).classList.contains('active');}
+function fmt(n){return '$'+Math.round(n).toLocaleString('es-MX');}
+function tog(id){if(g(id)) g(id).classList.toggle('active');recalc();}
+function getFE(){var fe=g(currentCat+'_fecha_entrega'),fh=g(currentCat+'_hora_entrega');return{fecha:fe?fe.value:'',hora:fh?fh.value:''};}
+
+// STORAGE
+function loadData(){
+  try{
+    var h=localStorage.getItem('iqs_hist');if(h) historial=JSON.parse(h);
+    var p=localStorage.getItem('iqs_ped');if(p) pedidos=JSON.parse(p);
+    var f=localStorage.getItem('iqs_folio');if(f) folio=parseInt(f)||1;
+  }catch(e){historial=[];pedidos=[];folio=1;}
+  g('folioHdr').textContent='#'+String(folio).padStart(4,'0');
+  renderPedidos();updateBadge();
+}
+function saveData(){
+  try{
+    localStorage.setItem('iqs_hist',JSON.stringify(historial));
+    localStorage.setItem('iqs_ped',JSON.stringify(pedidos));
+    localStorage.setItem('iqs_folio',String(folio));
+  }catch(e){console.warn(e);}
+}
+
+// NAV
+function setNav(s,btn){
+  document.querySelectorAll('.nav-tab').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.seccion-tab').forEach(function(x){x.classList.remove('active');});
+  g('sec_'+s).classList.add('active');
+  if(s==='pedidos'){renderResumen();renderPedidos();}
+  if(s==='dashboard') renderDashboard();
+}
+function setCat(cat,btn){
+  document.querySelectorAll('.cat-pill').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.cat-form').forEach(function(f){f.classList.remove('active');});
+  g('form_'+cat).classList.add('active');
+  currentCat=cat;recalc();
+}
+
+// TOGGLES
+function setLogoTipo(t){
+  logoTipo=t;
+  ['base','sinbase_a','sinbase_b'].forEach(function(x){g('logos_t_'+x).classList.toggle('active',x===t);});
+  g('logos_sec_base').style.display=t==='base'?'block':'none';
+  g('logos_sec_sinbase').style.display=t!=='base'?'block':'none';
+  recalc();
+}
+function setLogosChap(t){logosChapeton=t;g('logos_chap_plateado').classList.toggle('active',t==='plateado');g('logos_chap_dorado').classList.toggle('active',t==='dorado');recalc();}
+function toggleTercera(){g('logos_tercera').classList.toggle('active');g('logos_tercera_wrap').style.display=isOn('logos_tercera')?'block':'none';recalc();}
+function toggleLED(){g('logos_led').classList.toggle('active');g('logos_led_wrap').style.display=isOn('logos_led')?'block':'none';recalc();}
+function setMetraje(t){neonMetraje=t;['normal','medio','largo'].forEach(function(x){g('neon_m_'+x).classList.toggle('active',x===t);});recalc();}
+function setNeonChap(t){neonChapeton=t;g('neon_c_plateado').classList.toggle('active',t==='plateado');g('neon_c_dorado').classList.toggle('active',t==='dorado');recalc();}
+function setToppersCliente(t){toppersCliente=t;g('toppers_nuevo').classList.toggle('active',t==='nuevo');g('toppers_frecuente').classList.toggle('active',t==='frecuente');recalc();}
+function setToppersExtra(n){toppersExtra=toppersExtra===n?0:n;g('toppers_extra50').classList.toggle('active',toppersExtra===50);g('toppers_extra60').classList.toggle('active',toppersExtra===60);recalc();}
+function setMdfTipo(t){
+  mdfTipo=t;
+  ['nombres','bases','llaveros','manual'].forEach(function(x){g('mdf_t_'+x).classList.toggle('active',x===t);g('mdf_sec_'+x).style.display=x===t?'block':'none';});
+  if(t==='bases') renderBasesItems();
+  recalc();
+}
+function setAcabado(t){mdfAcabado=t;g('mdf_natural').classList.toggle('active',t==='natural');g('mdf_pintado').classList.toggle('active',t==='pintado');recalc();}
+function setTermoPropio(trae){
+  termoPropio=trae;
+  g('termos_trae_si').classList.toggle('active',trae);
+  g('termos_trae_no').classList.toggle('active',!trae);
+  g('termos_sec_propio').style.display=trae?'block':'none';
+  g('termos_sec_nuestro').style.display=trae?'none':'block';
+  recalc();
+}
+function setTermoPropioTipo(t){
+  termoPropioTipo=t;
+  var ids={solo_1:'termos_p_solo1',solo_2:'termos_p_solo2',mayoreo_corto:'termos_p_mc',mayoreo_nombre:'termos_p_mn'};
+  Object.values(ids).forEach(function(id){if(g(id)) g(id).classList.remove('active');});
+  if(g(ids[t])) g(ids[t]).classList.add('active');
+  recalc();
+}
+function setMayoreo(n){mayoreoTermo=mayoreoTermo===n?0:n;g('termos_m5').classList.toggle('active',mayoreoTermo===5);g('termos_m10').classList.toggle('active',mayoreoTermo===10);recalc();}
+function setGrabadoCliente(t){grabadoCliente=t;g('grabado_nuevo').classList.toggle('active',t==='nuevo');g('grabado_frecuente').classList.toggle('active',t==='frecuente');renderGrabadoPrecios();recalc();}
+function setGrabadoTam(t){grabadoTam=t;['pequeno','mediano','grande'].forEach(function(x){g('grabado_t_'+x).classList.toggle('active',x===t);});renderGrabadoPrecios();recalc();}
+function renderGrabadoPrecios(){
+  var precios=GRABADO_PRECIOS[grabadoCliente][grabadoTam];grabadoPrecio=precios[0];
+  var wrap=g('grabado_precios');if(!wrap) return;
+  wrap.innerHTML=precios.map(function(p,i){return '<button class="toggle-btn '+(i===0?'active':'')+'" onclick="selectGrabadoPrecio(this,'+p+')">$'+p+'</button>';}).join('');
+}
+function selectGrabadoPrecio(btn,p){grabadoPrecio=p;g('grabado_precios').querySelectorAll('.toggle-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');recalc();}
+function setCortemat(t){corteMat=t;g('corte_acrilico').classList.toggle('active',t==='acrilico');g('corte_mdf').classList.toggle('active',t==='mdf');recalc();}
+function toggleCfg(id,btn){var b=g(id);b.classList.toggle('open');btn.querySelector('i').style.transform=b.classList.contains('open')?'rotate(180deg)':'';}
+function setFiltro(f){filtroActual=f;['todos','activos','entregados'].forEach(function(x){g('filt_'+x).classList.toggle('active',x===f);});renderPedidos();}
+
+// BASES MDF
+function renderBasesItems(){
+  var mat=g('mdf_bases_mat')?g('mdf_bases_mat').value:'3mm';
+  var wrap=g('bases_items');if(!wrap) return;
+  wrap.innerHTML=basesItems.map(function(item,i){
+    var opts=MEDIDAS_MDF.map(function(m){return '<option value="'+m+'"'+(m===item.medida?' selected':'')+'>'+m+' cm</option>';}).join('');
+    return '<div class="bases-item"><select onchange="updateBase('+i+',\'medida\',this.value)">'+opts+'</select><input type="number" min="1" value="'+item.cant+'" onchange="updateBase('+i+',\'cant\',this.value)"><button onclick="removeBase('+i+')"><i class="ti ti-trash" style="font-size:13px"></i></button></div>';
+  }).join('');
+  recalc();
+}
+function agregarBase(){basesItems.push({medida:'12x12',cant:1});renderBasesItems();}
+function removeBase(i){if(basesItems.length>1){basesItems.splice(i,1);renderBasesItems();}else recalc();}
+function updateBase(i,campo,val){
+  if(campo==='medida') basesItems[i].medida=val;
+  else basesItems[i].cant=parseInt(val)||1;
+  recalc();
+}
+
+// DESGLOSE
+function renderDesglose(cat,rows,total,costo){
+  var iva=total/1.16*0.16,neto=total-iva,gan=total-costo-iva;
+  var margen=total>0?(gan/total*100):0;
+  var mc=margen>=50?'var(--green)':margen>=25?'var(--amber)':'var(--red)';
+  var html='<div class="desglose-card"><div class="desglose-title">Desglose</div>';
+  rows.forEach(function(r){if(r.val!==0) html+='<div class="d-row"><span>'+r.label+'</span><span>'+fmt(r.val)+'</span></div>';});
+  html+='<div class="d-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:8px;border-bottom:none"><span>Subtotal sin IVA</span><span>'+fmt(neto)+'</span></div>';
+  html+='<div class="d-row"><span>IVA 16% absorbido</span><span style="color:var(--red)">−'+fmt(iva)+'</span></div>';
+  html+='<div class="d-row total"><span>Total</span><span>'+fmt(total)+'</span></div></div>';
+  html+='<div class="margen-wrap"><div class="margen-top"><span style="color:var(--text-dim)">Margen real</span><span style="font-weight:600;color:'+mc+'">'+margen.toFixed(1)+'%</span></div><div class="margen-bar"><div class="margen-fill" style="width:'+Math.min(Math.max(margen,0),100)+'%;background:'+mc+'"></div></div><div class="margen-bottom"><span>Costo+IVA: <strong>'+fmt(costo+iva)+'</strong></span><span>Ganancia: <strong style="color:'+mc+'">'+fmt(gan)+'</strong></span></div></div>';
+  g('desglose_'+cat).innerHTML=html;
+  var fe=getFE();
+  lastResult={total:total,costo:costo,iva:iva,cat:cat,cliente:g(cat+'_cliente')?g(cat+'_cliente').value:'',fechaEntrega:fe.fecha,horaEntrega:fe.hora};
+  g('folioHdr').textContent='#'+String(folio).padStart(4,'0');
+}
+
+// CÁLCULOS
+function calcLogos(){
+  if(logoTipo==='base'){
+    var precio=v('logos_tamano'),cant=v('logos_cantidad')||1;
+    var tamMap={1590:50,2090:60,3490:80,3990:90},tam=tamMap[precio]||50;
+    var chapExtra=logosChapeton==='dorado'?100:0;
+    var tercera=isOn('logos_tercera')?350:0;
+    var led=isOn('logos_led');
+    var sub=precio+tercera+chapExtra;
+    var urg=isOn('logos_mismodia')?sub*.5:isOn('logos_urgente')?sub*.2:0;
+    var ins=isOn('logos_instalacion')?300:0;
+    var total=(sub+urg+ins)*cant;
+    var cB=g('logos_color_base')?g('logos_color_base').value:'—';
+    var cD=g('logos_color_diseno')?g('logos_color_diseno').value:'—';
+    var cT=g('logos_color_tercera')?g('logos_color_tercera').value:'—';
+    var cL=g('logos_color_led')?g('logos_color_led').value:'—';
+    var rows=[{label:'Logo '+tam+'cm · Base: '+cB+' · Diseño: '+cD,val:precio*cant}];
+    if(isOn('logos_tercera')) rows.push({label:'3ra capa · '+cT,val:tercera*cant});
+    if(logosChapeton==='dorado') rows.push({label:'Chapetones dorados',val:chapExtra*cant});
+    if(led) rows.push({label:'LED '+cL,val:0});
+    if(urg>0) rows.push({label:'Urgente',val:urg*cant});
+    if(ins>0) rows.push({label:'Instalación',val:ins*cant});
+    renderDesglose('logos',rows,total,tam*tam*0.04*2*cant+(led?105*cant:0));
+  } else {
+    var ancho=v('logos_ancho'),alto=v('logos_alto'),cant=v('logos_sb_cantidad')||1;
+    var area=ancho*alto,cE=area*0.06,cS=logoTipo==='sinbase_a'?area*0.006:area*0.04;
+    var pb=(cE+cS)*5;
+    var urg=isOn('logos_mismodia_sb')?pb*.5:isOn('logos_urgente_sb')?pb*.2:0;
+    var ins=isOn('logos_instalacion_sb')?400:0;
+    var total=(pb+urg+ins)*cant;
+    var v2=logoTipo==='sinbase_a'?'Espejo + MDF':'Espejo + transparente';
+    var inf=g('logos_sb_info');if(inf) inf.textContent=ancho+'×'+alto+'cm · '+v2+' · Base: '+fmt(pb);
+    // Instalación incluida en precio pero no visible en nota
+    renderDesglose('logos',[
+      {label:'Logo sin base '+ancho+'×'+alto+'cm · '+v2,val:(pb+ins)*cant},
+      {label:'Urgente',val:urg*cant}
+    ],total,(cE+cS+26)*cant);
+  }
+}
+
+function calcNeon(){
+  var base=v('neon_tipo'),comp=v('neon_complejidad'),cant=v('neon_cantidad')||1;
+  var color=g('neon_color')?g('neon_color').value:'—';
+  var mEx=neonMetraje==='largo'?350:neonMetraje==='medio'?250:0;
+  var chEx=neonChapeton==='dorado'?100:0;
+  var apag=isOn('neon_apagador')?120:0,ins=isOn('neon_instalacion')?300:0;
+  var sub=base+comp+mEx+chEx;
+  var urg=isOn('neon_mismodia')?sub*.5:isOn('neon_urgente')?sub*.2:0;
+  var total=(sub+urg+apag+ins)*cant;
+  var metros=neonMetraje==='largo'?10:neonMetraje==='medio'?7:4;
+  var rows=[{label:'Letrero neon · '+color,val:(sub+urg)*cant}];
+  if(apag>0) rows.push({label:'Apagador',val:apag*cant});
+  if(ins>0) rows.push({label:'Instalación',val:ins*cant});
+  renderDesglose('neon',rows,total,(metros*32+223)*cant);
+}
+
+function calcToppers(){
+  var tam=g('toppers_tamano')?g('toppers_tamano').value:'15',cant=v('toppers_cantidad')||1;
+  var freq=toppersCliente==='frecuente';
+  var precio=tam==='15'?(freq?100:150):(freq?85:120);
+  var sub=precio+toppersExtra;
+  var urg=isOn('toppers_urgente')?sub*.2:0;
+  renderDesglose('toppers',[
+    {label:'Topper '+(tam==='15'?'15cm':'10–12cm')+' · '+(freq?'frecuente':'nuevo'),val:precio*cant},
+    {label:'Pieza adicional',val:toppersExtra*cant},
+    {label:'Urgente',val:urg*cant}
+  ],(sub+urg)*cant,(tam==='15'?18:12)*cant);
+}
+
+function calcMdf(){
+  if(mdfTipo==='nombres'){
+    var precio=v('mdf_nombres_tam'),cant=v('mdf_nombres_cant')||1,tam=precio===150?60:80;
+    var pin=mdfAcabado==='pintado'?100:0,vinilM=v('mdf_vinil_metros'),vinil=vinilM*120;
+    var sub=precio+pin+vinil;
+    var urg=isOn('mdf_mismodia')?sub*.5:isOn('mdf_urgente')?sub*.2:0;
+    renderDesglose('mdf',[{label:'Letras MDF '+tam+'cm',val:precio*cant},{label:'Pintado',val:pin*cant},{label:'Vinil ('+vinilM+'m)',val:vinil*cant},{label:'Urgente',val:urg*cant}],(sub+urg)*cant,(tam*tam*0.006+(mdfAcabado==='pintado'?33:0)+vinilM*60)*cant);
+  } else if(mdfTipo==='bases'){
+    var mat=g('mdf_bases_mat')?g('mdf_bases_mat').value:'3mm';
+    var totalPzas=basesItems.reduce(function(a,x){return a+(x.cant||0);},0);
+    var mayoreo=totalPzas>=20;
+    var tabla=mayoreo?BASES_V:BASES_MINI;
+    var totalPrecio=0,totalCosto=0,resumen=[];
+    basesItems.forEach(function(item){
+      var pu=tabla[mat][item.medida]||0;
+      var subtotal=pu*item.cant;
+      totalPrecio+=subtotal;
+      totalCosto+=BASES_CM2[item.medida]*MDF_CM2C[mat]*item.cant;
+      if(item.cant>0) resumen.push(item.cant+'pz '+item.medida+' $'+pu+'c/u');
+    });
+    var mL=mat==='3mm'?'3mm':mat==='6mm'?'6mm nat':'6mm blanco';
+    var inf=g('mdf_bases_info');
+    if(inf) inf.textContent=totalPzas+' pzas total · MDF '+mL+' · '+(mayoreo?'Precio mayoreo (≥20pz)':'Precio menudeo (<20pz)')+' · '+resumen.join(', ');
+    renderDesglose('mdf',[{label:'Bases MDF '+mL+' · '+totalPzas+' pzas',val:totalPrecio}],totalPrecio,totalCosto);
+  } else if(mdfTipo==='llaveros'){
+    var cant=v('mdf_llaveros_cant')||1;
+    renderDesglose('mdf',[{label:'Llaveros 5×5cm × '+cant+'pz',val:15*cant}],15*cant,(25*0.006+1)*cant);
+  } else {
+    var precio=v('mdf_manual_precio'),costo=v('mdf_manual_costo'),desc=g('mdf_manual_notas')?g('mdf_manual_notas').value:'Trabajo especial';
+    renderDesglose('mdf',[{label:desc.slice(0,45),val:precio}],precio,costo);
+  }
+}
+
+function calcTermos(){
+  var cant=v('termos_cantidad')||1;
+  var pu,costo,label;
+  var termoPrecios={solo_1:100,solo_2:150,mayoreo_corto:60,mayoreo_nombre:80};
+  if(termoPropio){
+    pu=termoPrecios[termoPropioTipo]||100;costo=0;
+    var lbl={solo_1:'Grabado 1 diseño',solo_2:'Grabado 2 diseños',mayoreo_corto:'Mayoreo grabado corto',mayoreo_nombre:'Mayoreo nombre completo'};
+    label=lbl[termoPropioTipo]+' (termo del cliente)';
+  } else {
+    var color=g('termos_color')?g('termos_color').value:'—';
+    var tam=g('termos_tamano')?g('termos_tamano').value:'20';
+    pu=300;costo=130;label='Termo '+tam+'oz · '+color+' + grabado';
+    var desc=0;
+    if(mayoreoTermo===10) desc=pu*.15;
+    else if(mayoreoTermo===5) desc=pu*.10;
+    pu-=desc;
+  }
+  var urg=isOn('termos_urgente')?pu*.2:0;
+  var base=termoPropio?termoPrecios[termoPropioTipo]:300;
+  renderDesglose('termos',[{label:label,val:base*cant},{label:'Urgente',val:urg*cant}],(pu+urg)*cant,costo*cant);
+}
+
+function calcDisplays(){
+  var tipo=v('displays_tipo'),cant=v('displays_cantidad')||1;
+  var cw=g('displays_custom');if(cw) cw.style.display=tipo===0?'block':'none';
+  var base,costo,label;
+  if(tipo===0){base=v('displays_precio_libre');costo=v('displays_costo_libre');label='Display personalizado';}
+  else{base=tipo;costo=tipo<=600?60:tipo<=700?78:tipo<=800?90:110;var t=(tipo==600||tipo==800)?'16cm':'20cm';var p=(tipo==800||tipo==950)?' premium':' estándar';label='Display '+t+p;}
+  var tercera=isOn('displays_tercera')?150:0;
+  var sub=base+tercera;
+  var urg=isOn('displays_urgente')?sub*.3:0;
+  renderDesglose('displays',[{label:label,val:base*cant},{label:'3ra capa',val:tercera*cant},{label:'Urgente +30%',val:urg*cant}],(sub+urg)*cant,costo*cant);
+}
+
+function calcGrabado(){
+  var cant=v('grabado_cantidad')||1;
+  var objeto=g('grabado_objeto')?g('grabado_objeto').value:'Objeto';
+  var precio=grabadoPrecio||GRABADO_PRECIOS[grabadoCliente][grabadoTam][0];
+  var urg=isOn('grabado_mismodia')?precio*.5:isOn('grabado_urgente')?precio*.2:0;
+  renderDesglose('grabado',[{label:'Grabado · '+objeto,val:precio*cant},{label:'Urgente',val:urg*cant}],(precio+urg)*cant,precio*.15*cant);
+}
+
+function calcCorte(){
+  var ancho=v('corte_ancho'),alto=v('corte_alto'),cant=v('corte_cantidad')||1;
+  var area=ancho*alto,esA=corteMat==='acrilico';
+  var costoMat=area*(esA?0.04:0.006),mult=esA?3:5,pu=costoMat*mult;
+  var urg=isOn('corte_mismodia')?pu*.5:isOn('corte_urgente')?pu*.2:0;
+  var inf=g('corte_info');if(inf) inf.textContent=ancho+'×'+alto+'cm · '+area+'cm² · '+(esA?'Acrílico':'MDF')+' · '+fmt(pu)+' c/u';
+  renderDesglose('corte',[{label:'Corte '+(esA?'acrílico':'MDF')+' '+ancho+'×'+alto+'cm × '+cant+'pz',val:pu*cant},{label:'Urgente',val:urg*cant}],(pu+urg)*cant,costoMat*cant);
+}
+
+function calcPersonalizado(){
+  var h=v('pers_horas'),mat=v('pers_material'),ext=v('pers_extras');
+  var ho=v('cfg_hora_obj')||230,hl=v('cfg_hora_laser')||30,mg=v('pers_margen')/100;
+  var trabajo=h*(ho+hl),sub=(trabajo+mat+ext)*(1+mg);
+  renderDesglose('personalizado',[{label:'Mano de obra ('+h+'h)',val:trabajo},{label:'Materiales',val:mat},{label:'Extras',val:ext},{label:'Margen '+(mg*100).toFixed(0)+'%',val:sub-(trabajo+mat+ext)}],sub,h*hl+mat);
+}
+
+function recalc(){
+  var map={logos:calcLogos,neon:calcNeon,toppers:calcToppers,mdf:calcMdf,termos:calcTermos,displays:calcDisplays,grabado:calcGrabado,corte:calcCorte,personalizado:calcPersonalizado};
+  try{if(map[currentCat]) map[currentCat]();}catch(e){console.warn('recalc:',e);}
+}
+
+// GUARDAR
+function getDetalles(cat){
+  var d='';
+  if(cat==='logos'){
+    if(logoTipo==='base'){
+      var tamMap={1590:'50cm',2090:'60cm',3490:'80cm',3990:'90cm'};
+      var tam=tamMap[v('logos_tamano')]||'';
+      d='Logo '+tam+' · Base: '+(g('logos_color_base')?g('logos_color_base').value:'')+' · Diseño: '+(g('logos_color_diseno')?g('logos_color_diseno').value:'');
+      if(isOn('logos_tercera')) d+=' · 3ra capa: '+(g('logos_color_tercera')?g('logos_color_tercera').value:'');
+      if(isOn('logos_led')) d+=' · LED: '+(g('logos_color_led')?g('logos_color_led').value:'');
+    } else {
+      var ancho=v('logos_ancho'),alto=v('logos_alto');
+      d='Logo sin base '+ancho+'×'+alto+'cm · '+(logoTipo==='sinbase_a'?'Espejo + MDF':'Espejo + transparente');
+    }
+  } else if(cat==='neon'){
+    d='Neon · '+(g('neon_color')?g('neon_color').value:'')+' · '+(['normal','medio','largo'].map(function(x){return neonMetraje===x?{normal:'Hasta 5m',medio:'5–10m',largo:'+10m'}[x]:null;}).filter(Boolean)[0]||'');
+    if(isOn('neon_apagador')) d+=' · Con apagador';
+  } else if(cat==='toppers'){
+    var tam=g('toppers_tamano')?g('toppers_tamano').value:'15';
+    var color=g('toppers_color')?g('toppers_color').value:'';
+    var nombre=g('toppers_nombre')?g('toppers_nombre').value:'';
+    d='Caketopper '+color+(nombre?' · '+nombre:'')+' · '+(tam==='15'?'15cm':'10–12cm');
+  } else if(cat==='mdf'){
+    if(mdfTipo==='nombres'){
+      var tamN=v('mdf_nombres_tam')===150?'60cm':'80cm';
+      d='MDF '+tamN+' · '+(mdfAcabado==='pintado'?'Pintado':'Natural');
+      if(v('mdf_vinil_metros')>0) d+=' · Vinil '+v('mdf_vinil_metros')+'m';
+    } else if(mdfTipo==='bases'){
+      var mat=g('mdf_bases_mat')?g('mdf_bases_mat').value:'3mm';
+      var mL=mat==='3mm'?'3mm':mat==='6mm'?'6mm natural':'6mm blanco';
+      var totalPzas=basesItems.reduce(function(a,x){return a+(x.cant||0);},0);
+      d='Bases MDF '+mL+' · '+totalPzas+' pzas · '+basesItems.map(function(x){return x.cant+'pz '+x.medida;}).join(', ');
+    } else if(mdfTipo==='llaveros'){
+      d='Llaveros MDF 5×5cm · '+v('mdf_llaveros_cant')+'pz';
+    } else {
+      d=g('mdf_manual_notas')?g('mdf_manual_notas').value:'MDF especial';
+    }
+  } else if(cat==='termos'){
+    if(termoPropio){
+      var lbl={solo_1:'1 diseño',solo_2:'2 diseños',mayoreo_corto:'Mayoreo corto',mayoreo_nombre:'Mayoreo nombre'};
+      d='Grabado '+(lbl[termoPropioTipo]||'')+' · Termo del cliente';
+    } else {
+      d='Termo '+(g('termos_tamano')?g('termos_tamano').value:'')+'oz · '+(g('termos_color')?g('termos_color').value:'');
+    }
+  } else if(cat==='displays'){
+    var tipo=v('displays_tipo');
+    if(tipo===0) d='Display personalizado';
+    else{var t=(tipo==600||tipo==800)?'16cm':'20cm';var pr=(tipo==800||tipo==950)?' premium':' estándar';d='Display '+t+pr;}
+    if(isOn('displays_tercera')) d+=' · 3ra capa';
+  } else if(cat==='grabado'){
+    d='Grabado · '+(g('grabado_objeto')?g('grabado_objeto').value:'')+" · "+(grabadoCliente==='frecuente'?'Cliente frecuente':'Cliente nuevo');
+  } else if(cat==='corte'){
+    d='Corte '+(corteMat==='acrilico'?'acrílico':'MDF')+' '+v('corte_ancho')+'×'+v('corte_alto')+'cm';
+  } else if(cat==='personalizado'){
+    d=g('pers_notas')?g('pers_notas').value:'Trabajo especial';
+  }
+  return d;
+}
+
+function saveQuote(){
+  recalc();
+  if(!lastResult||!lastResult.total) return;
+  var r=lastResult;
+  var notas=g(r.cat+'_notas')?g(r.cat+'_notas').value:'';
+  var entry={id:Date.now(),folio:folio,fecha:today,cat:r.cat,catLabel:catLabels[r.cat],cliente:r.cliente||'Sin nombre',total:r.total,costo:r.costo,iva:r.iva,fechaEntrega:r.fechaEntrega,horaEntrega:r.horaEntrega,status:'pendiente',anticipo:0,formaPago:'',telefono:'',notas:notas,detalles:getDetalles(r.cat)};
+  historial.unshift(entry);
+  pedidos.unshift(Object.assign({},entry));
+  folio++;
+  g('folioHdr').textContent='#'+String(folio).padStart(4,'0');
+  saveData();updateBadge();
+  var btn=document.querySelector('.btn-p');
+  var orig=btn.innerHTML;
+  btn.innerHTML='<i class="ti ti-check" style="font-size:13px;margin-right:4px"></i>¡Guardada!';
+  btn.style.background='var(--green)';
+  setTimeout(function(){btn.innerHTML=orig;btn.style.background='';},1500);
+}
+
+// PEDIDOS
+function getStatus(p){
+  if(p.status==='entregado') return 'entregado';
+  if(p.status==='cancelado') return 'cancelado';
+  if(p.status==='urgente') return 'urgente';
+  if(p.status==='listo') return 'listo';
+  if(p.fechaEntrega){
+    var hoy=new Date();hoy.setHours(0,0,0,0);
+    var fe=new Date(p.fechaEntrega+'T00:00:00');
+    if((fe-hoy)/(86400000)<=2&&fe>=hoy) return 'proximo';
+  }
+  return 'pendiente';
+}
+var sLabel={pendiente:'Pendiente',listo:'Listo',proximo:'Próximo',urgente:'Urgente',entregado:'Entregado',cancelado:'Cancelado'};
+var sClass={pendiente:'s-pendiente',listo:'s-listo',proximo:'s-proximo',urgente:'s-urgente',entregado:'s-entregado',cancelado:'s-cancelado'};
+
+function renderResumen(){
+  var meta=20000,ahora=new Date();
+  var ventas=pedidos.filter(function(p){
+    if(!p.fecha) return false;
+    var pts=p.fecha.split('/');if(pts.length<3) return false;
+    var d=new Date(pts[2]+'-'+pts[1].padStart(2,'0')+'-'+pts[0].padStart(2,'0'));
+    return d.getMonth()===ahora.getMonth()&&d.getFullYear()===ahora.getFullYear();
+  }).reduce(function(a,p){return a+p.total;},0);
+  var pct=Math.min((ventas/meta)*100,100);
+  var mc=pct>=100?'var(--green)':pct>=60?'var(--amber)':'var(--red)';
+  var saldo=pedidos.filter(function(p){var s=getStatus(p);return s!=='entregado'&&s!=='cancelado';}).reduce(function(a,p){return a+(p.total-(p.anticipo||0));},0);
+  var activos=pedidos.filter(function(p){var s=getStatus(p);return s!=='entregado'&&s!=='cancelado';}).length;
+  var rEl=g('pedidos_resumen');if(!rEl) return;
+  rEl.innerHTML='<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px"><span style="color:var(--text-dim)">Meta del mes</span><span style="font-weight:600;color:'+mc+'">'+fmt(ventas)+' / '+fmt(meta)+'</span></div><div class="bar-wrap"><div class="bar-fill" style="width:'+pct.toFixed(0)+'%;background:'+mc+'"></div></div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">'+pct.toFixed(0)+'% · '+(pct>=100?'🎉 ¡Meta alcanzada!':fmt(meta-ventas)+' para llegar')+'</div></div><div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div><div style="font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted)">Saldo pendiente</div><div style="font-size:22px;font-weight:700;color:'+(saldo>0?'var(--red)':'var(--green)')+'">'+fmt(saldo)+'</div></div><div style="text-align:right"><div style="font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted)">Pedidos activos</div><div style="font-size:22px;font-weight:700">'+activos+'</div></div></div>';
+}
+
+function renderPedidos(){
+  renderResumen();
+  var lst=g('pedidos_list');if(!lst) return;
+  var filtered=pedidos.filter(function(p){
+    var s=getStatus(p);
+    if(filtroActual==='activos') return s!=='entregado'&&s!=='cancelado';
+    if(filtroActual==='entregados') return s==='entregado';
+    return true;
+  });
+  filtered.sort(function(a,b){if(!a.fechaEntrega) return 1;if(!b.fechaEntrega) return -1;return new Date(a.fechaEntrega)-new Date(b.fechaEntrega);});
+  if(!filtered.length){lst.innerHTML='<div class="empty-state"><i class="ti ti-clipboard-list" style="font-size:32px;display:block;margin-bottom:8px"></i>Sin pedidos</div>';return;}
+  lst.innerHTML=filtered.map(function(p){
+    var s=getStatus(p),saldo=p.total-(p.anticipo||0);
+    var fStr=p.fechaEntrega?new Date(p.fechaEntrega+'T00:00:00').toLocaleDateString('es-MX',{day:'2-digit',month:'short'})+(p.horaEntrega?' '+p.horaEntrega:''):'Sin fecha';
+    return '<div class="pedido-card">'+
+      '<div onclick="openPedido(\''+p.id+'\')" style="cursor:pointer">'+
+      '<div style="display:flex;justify-content:space-between">'+
+      '<div><div class="pedido-nombre">'+p.cliente+'</div><div class="pedido-cat">'+p.catLabel+' · #'+String(p.folio).padStart(4,'0')+'</div></div>'+
+      '<div style="text-align:right"><div style="font-size:15px;font-weight:700">'+fmt(p.total)+'</div><div style="font-size:11px;color:var(--text-muted)">'+(saldo>0?'Saldo: '+fmt(saldo):'Pagado ✓')+'</div></div>'+
+      '</div>'+
+      '<div class="pedido-footer"><div class="pedido-fecha"><i class="ti ti-calendar" style="font-size:12px"></i>'+fStr+'</div><span class="sb '+sClass[s]+'">'+sLabel[s]+'</span></div>'+
+      '</div>'+
+      '<button onclick="event.stopPropagation();toggleRecibo(\''+p.id+'\')" style="width:100%;margin-top:8px;padding:7px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:Inter,sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:var(--text-dim)">'+
+      '<i class="ti ti-receipt" style="font-size:12px;margin-right:4px"></i>Ver recibo</button>'+
+      '<div class="recibo-area" id="recibo_'+p.id+'"></div>'+
+      '</div>';
+  }).join('');
+  updateBadge();
+}
+
+function toggleRecibo(id){
+  var area=g('recibo_'+id);
+  if(!area) return;
+  if(area.style.display==='block'){area.style.display='none';return;}
+  var p=pedidos.find(function(x){return String(x.id)===String(id);});
+  if(!p) return;
+  var saldo=p.total-(p.anticipo||0);
+  var fe=p.fechaEntrega?new Date(p.fechaEntrega+'T00:00:00').toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'—';
+  var iva=p.iva||p.total/1.16*0.16;
+  var neto=p.total-iva;
+  var saldoColor=saldo>0?'#c62828':'#2e7d32';
+
+  function row(l,v){return '<div class="recibo-row"><span>'+l+'</span><span>'+v+'</span></div>';}
+
+  area.innerHTML=
+    '<div style="margin-bottom:10px">'+
+    '<svg width="150" height="30" viewBox="0 0 150 30" xmlns="http://www.w3.org/2000/svg">'+
+    '<text x="0" y="18" font-family="Arial,sans-serif" font-size="14" font-weight="400" fill="#111">IDEAS</text>'+
+    '<text x="40" y="18" font-family="Arial,sans-serif" font-size="14" font-weight="800" fill="#111">QSOLUCIONAN</text>'+
+    '<text x="0" y="27" font-family="Arial,sans-serif" font-size="6" font-weight="600" fill="#555" letter-spacing="1.5">|CORTE Y GRABADO CNC|</text>'+
+    '</svg></div>'+
+    row('Folio','<strong>#'+String(p.folio).padStart(4,'0')+'</strong>')+
+    row('Cliente',p.cliente)+
+    row('Producto',p.catLabel)+
+    (p.detalles?row('Detalles','<span style="color:#444">'+p.detalles+'</span>'):'')+
+    row('Fecha',p.fecha)+
+    row('Entrega',fe)+
+    (p.horaEntrega?row('Hora',p.horaEntrega):'')+
+    '<div style="height:1px;background:#eee;margin:6px 0"></div>'+
+    row('Subtotal sin IVA',fmt(neto))+
+    row('IVA 16%',fmt(iva))+
+    '<div class="recibo-total"><span>Total</span><span style="font-size:18px;font-weight:700">'+fmt(p.total)+'</span></div>'+
+    row('Anticipo',fmt(p.anticipo||0))+
+    (p.formaPago?row('Forma de pago',p.formaPago):'')+
+    '<div style="text-align:center;font-size:12px;font-weight:600;margin:8px 0;color:'+saldoColor+'">'+(saldo>0?'Saldo: '+fmt(saldo):'✓ Pagado completamente')+'</div>'+
+    (p.notas?'<div style="background:#f7f7f7;border-radius:6px;padding:6px 8px;font-size:11px;color:#666;margin-bottom:6px">'+p.notas+'</div>':'')+
+    '<div style="text-align:center;font-size:10px;color:#aaa;padding-top:6px">Gracias por tu preferencia · IdeasQSolucionan · Ciudad Victoria, Tam.</div>';
+
+  area.style.display='block';
+}
+
+function updateBadge(){
+  var n=pedidos.filter(function(p){var s=getStatus(p);return s!=='entregado'&&s!=='cancelado';}).length;
+  var b=g('pedidos_badge');
+  if(n>0){b.style.display='inline';b.textContent=n;}else b.style.display='none';
+}
+
+var pagoSel='';
+function openPedido(id){
+  var p=pedidos.find(function(x){return String(x.id)===String(id);});if(!p) return;
+  var s=getStatus(p),saldo=p.total-(p.anticipo||0);
+  g('pm_titulo').textContent=p.cliente;pagoSel=p.formaPago||'';
+  var html='<div class="pm-row"><span>Producto</span><span>'+p.catLabel+'</span></div><div class="pm-row"><span>Folio</span><span>#'+String(p.folio).padStart(4,'0')+'</span></div><div class="pm-row"><span>Total</span><span><strong>'+fmt(p.total)+'</strong></span></div><div class="pm-row"><span>Anticipo</span><span>'+fmt(p.anticipo||0)+'</span></div><div class="pm-row"><span>Saldo</span><span style="color:'+(saldo>0?'var(--red)':'var(--green)')+'"><strong>'+(saldo>0?fmt(saldo):'Pagado ✓')+'</strong></span></div><div class="pm-row"><span>Estado</span><span><span class="sb '+sClass[s]+'">'+sLabel[s]+'</span></span></div><div style="height:1px;background:var(--border);margin:12px 0"></div>';
+  if(s!=='entregado'){
+    html+='<div class="form-group"><label>Teléfono / WhatsApp</label><input type="text" id="pm_tel" value="'+(p.telefono||'')+'" placeholder="+52 844 000 0000"></div><div class="form-group"><label>Anticipo recibido ($)</label><input type="number" id="pm_anticipo" value="'+(p.anticipo||0)+'" min="0"></div><div class="form-group"><label>Forma de pago</label><div class="pago-toggle"><button class="pago-btn '+(p.formaPago==='efectivo'?'active':'')+'" onclick="setPago(this,\'efectivo\')">💵 Efectivo</button><button class="pago-btn '+(p.formaPago==='transferencia'?'active':'')+'" onclick="setPago(this,\'transferencia\')">📲 Transferencia</button><button class="pago-btn '+(p.formaPago==='tarjeta'?'active':'')+'" onclick="setPago(this,\'tarjeta\')">💳 Tarjeta</button></div></div><div class="row2"><div class="form-group"><label>Fecha entrega</label><input type="date" id="pm_fecha" value="'+(p.fechaEntrega||'')+'"></div><div class="form-group"><label>Hora</label><input type="time" id="pm_hora" value="'+(p.horaEntrega||'')+'"></div></div><div class="form-group"><label>Estado</label><select id="pm_status"><option value="pendiente" '+(p.status==='pendiente'?'selected':'')+'>🟡 Pendiente</option><option value="listo" '+(p.status==='listo'?'selected':'')+'>🔵 Listo</option><option value="urgente" '+(p.status==='urgente'?'selected':'')+'>🟣 Urgente</option></select></div><div class="form-group"><label>Notas</label><textarea id="pm_notas" placeholder="Cambios...">'+(p.notas||'')+'</textarea></div><button class="btn-confirm" onclick="updatePedido(\''+p.id+'\')">💾 Guardar cambios</button><button class="btn-entregado" onclick="marcarEntregado(\''+p.id+'\')">✅ Marcar como entregado</button><button class="btn-cancelar" onclick="cancelarPedido(\''+p.id+'\')">✕ Cancelar pedido</button>';
+  } else {
+    html+='<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px">Pedido entregado ✓</div>';
+  }
+  g('pm_body').innerHTML=html;
+  g('pedidoModal').classList.add('show');
+}
+
+function setPago(btn,t){pagoSel=t;document.querySelectorAll('.pago-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
+function updatePedido(id){
+  var p=pedidos.find(function(x){return String(x.id)===String(id);});if(!p) return;
+  p.telefono=g('pm_tel')?g('pm_tel').value:'';
+  p.anticipo=parseFloat(g('pm_anticipo')?g('pm_anticipo').value:0)||0;
+  p.formaPago=pagoSel||p.formaPago;
+  p.fechaEntrega=g('pm_fecha')?g('pm_fecha').value:'';
+  p.horaEntrega=g('pm_hora')?g('pm_hora').value:'';
+  p.status=g('pm_status')?g('pm_status').value:'pendiente';
+  p.notas=g('pm_notas')?g('pm_notas').value:'';
+  saveData();renderPedidos();g('pedidoModal').classList.remove('show');
+}
+function marcarEntregado(id){var p=pedidos.find(function(x){return String(x.id)===String(id);});if(p){p.status='entregado';saveData();renderPedidos();g('pedidoModal').classList.remove('show');}}
+function cancelarPedido(id){
+  if(!confirm('¿Eliminar este pedido? No se puede deshacer.')) return;
+  pedidos=pedidos.filter(function(x){return String(x.id)!==String(id);});
+  historial=historial.filter(function(x){return String(x.id)!==String(id);});
+  saveData();renderPedidos();g('pedidoModal').classList.remove('show');
+}
+function reactivarPedido(id){var p=pedidos.find(function(x){return String(x.id)===String(id);});if(p){p.status='pendiente';saveData();renderPedidos();g('pedidoModal').classList.remove('show');}}
+
+// DASHBOARD
+function renderDashboard(){
+  var dc=g('dashboard_content');if(!dc) return;
+  var ahora=new Date();
+  var pedMes=pedidos.filter(function(p){
+    if(p.status==='cancelado') return false;
+    if(!p.fecha) return false;
+    var pts=p.fecha.split('/');if(pts.length<3) return false;
+    var d=new Date(pts[2]+'-'+pts[1].padStart(2,'0')+'-'+pts[0].padStart(2,'0'));
+    return d.getMonth()===ahora.getMonth()&&d.getFullYear()===ahora.getFullYear();
+  });
+  var ventasMes=pedMes.reduce(function(a,p){return a+p.total;},0);
+  var tickets=pedMes.length,ticketProm=tickets>0?ventasMes/tickets:0;
+  var costos=pedMes.reduce(function(a,p){return a+(p.costo||0);},0);
+  var ivas=pedMes.reduce(function(a,p){return a+(p.iva||p.total/1.16*0.16);},0);
+  var ganancia=ventasMes-costos-ivas;
+  var margenProm=ventasMes>0?(ganancia/ventasMes*100):0;
+  var mc=margenProm>=50?'var(--green)':margenProm>=25?'var(--amber)':'var(--red)';
+  var porCat={};
+  pedMes.forEach(function(p){if(!porCat[p.catLabel]) porCat[p.catLabel]={ventas:0,count:0};porCat[p.catLabel].ventas+=p.total;porCat[p.catLabel].count++;});
+  var catSorted=Object.entries(porCat).sort(function(a,b){return b[1].ventas-a[1].ventas;});
+  var maxVenta=catSorted.length?catSorted[0][1].ventas:1;
+  var hoy=new Date();hoy.setHours(0,0,0,0);
+  var manana=new Date(hoy);manana.setDate(manana.getDate()+1);
+  var hoyPeds=pedidos.filter(function(p){
+    if(!p.fechaEntrega||getStatus(p)==='entregado'||getStatus(p)==='cancelado') return false;
+    var fe=new Date(p.fechaEntrega+'T00:00:00');
+    return fe.getTime()===hoy.getTime()||fe.getTime()===manana.getTime();
+  }).sort(function(a,b){return new Date(a.fechaEntrega)-new Date(b.fechaEntrega);});
+  var mes=ahora.toLocaleDateString('es-MX',{month:'long',year:'numeric'});
+  dc.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="section-title">Dashboard</div><div style="font-size:12px;color:var(--text-dim);text-transform:capitalize">'+mes+'</div></div><div class="dash-grid"><div class="dash-card"><div class="dash-label">Ventas del mes</div><div class="dash-val">'+fmt(ventasMes)+'</div><div class="dash-sub">'+tickets+' pedido'+(tickets!==1?'s':'')+'</div></div><div class="dash-card"><div class="dash-label">Ticket promedio</div><div class="dash-val">'+fmt(ticketProm)+'</div></div><div class="dash-card"><div class="dash-label">Ganancia real</div><div class="dash-val" style="color:'+mc+'">'+fmt(ganancia)+'</div></div><div class="dash-card"><div class="dash-label">Margen promedio</div><div class="dash-val" style="color:'+mc+'">'+margenProm.toFixed(0)+'%</div></div></div><div class="dash-card full" style="margin-bottom:12px"><div class="dash-label" style="margin-bottom:12px">Ventas por categoría</div>'+(catSorted.length?catSorted.map(function(e){return '<div class="cat-row"><span>'+e[0]+'</span><div style="flex:1;margin:0 12px"><div class="bar-wrap" style="margin:0"><div class="bar-fill" style="width:'+((e[1].ventas/maxVenta)*100).toFixed(0)+'%;background:#111"></div></div></div><span style="font-weight:600">'+fmt(e[1].ventas)+'</span></div>';}).join(''):'<div style="text-align:center;padding:16px;color:var(--text-muted)">Sin ventas este mes</div>')+'</div><div class="dash-card full" style="margin-bottom:12px"><div class="dash-label" style="margin-bottom:10px">Entregas hoy y mañana</div>'+(hoyPeds.length?hoyPeds.map(function(p){var s=getStatus(p),fe=new Date(p.fechaEntrega+'T00:00:00'),esHoy=fe.getTime()===hoy.getTime();return '<div class="cat-row" onclick="openPedido(\''+p.id+'\')" style="cursor:pointer"><div><div style="font-size:13px;font-weight:500">'+p.cliente+'</div><div style="font-size:11px;color:var(--text-muted)">'+p.catLabel+(p.horaEntrega?' · '+p.horaEntrega:'')+'</div></div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:'+(esHoy?'var(--red)':'var(--amber)')+'">'+( esHoy?'Hoy':'Mañana')+'</span><span class="sb '+sClass[s]+'">'+sLabel[s]+'</span></div></div>';}).join(''):'<div style="text-align:center;padding:12px;color:var(--text-muted)">Sin entregas próximas 🎉</div>')+'</div><div class="dash-card full"><div class="dash-label" style="margin-bottom:6px">Resumen financiero</div><div class="cat-row"><span>Ventas brutas</span><span style="font-weight:600">'+fmt(ventasMes)+'</span></div><div class="cat-row"><span>Costos</span><span style="color:var(--red)">−'+fmt(costos)+'</span></div><div class="cat-row"><span>IVA absorbido</span><span style="color:var(--red)">−'+fmt(ivas)+'</span></div><div class="cat-row" style="border-bottom:none"><span style="font-weight:600">Ganancia neta</span><span style="font-weight:700;color:'+mc+'">'+fmt(ganancia)+'</span></div></div>';
+}
+
+// HISTORIAL
+function showHist(){
+  var lst=g('hist_list');
+  if(!historial.length){lst.innerHTML='<div class="empty-state">Sin cotizaciones.</div>';}
+  else{lst.innerHTML=historial.slice(0,30).map(function(q){var m=(q.total-q.costo)/q.total*100,bc=m>=50?'badge-ok':m>=25?'badge-warn':'badge-bad';return '<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:500">'+q.cliente+'</div><div style="font-size:11px;color:var(--text-muted)">'+q.catLabel+' · #'+String(q.folio).padStart(4,'0')+' · '+q.fecha+'</div></div><div style="text-align:right"><div style="font-size:15px;font-weight:700">'+fmt(q.total)+'</div><span class="badge '+bc+'">'+m.toFixed(0)+'%</span></div></div>';}).join('');}
+  g('hist_count').textContent=historial.length;
+  g('hist_total').textContent=fmt(historial.reduce(function(a,q){return a+q.total;},0));
+  g('histModal').classList.add('show');
+}
+
+// VISTA CLIENTE
+function showClientView(){
+  recalc();if(!lastResult) return;
+  var r=lastResult;
+  g('cv_folio').textContent='#'+String(folio).padStart(4,'0');
+  g('cv_fecha').textContent=today;
+  g('cv_cliente').textContent=r.cliente||'Cliente';
+  var rows=g('desglose_'+r.cat)?g('desglose_'+r.cat).querySelectorAll('.d-row:not(.total)'):[];
+  var items='';
+  rows.forEach(function(row){
+    var sp=row.querySelectorAll('span');
+    var lbl=sp[0]?sp[0].textContent:'',val=sp[1]?sp[1].textContent:'';
+    if(val&&val!=='$0'&&lbl.indexOf('IVA')===-1&&lbl.indexOf('Subtotal')===-1)
+      items+='<tr><td>'+lbl+'</td><td>'+val+'</td></tr>';
+  });
+  var iva=r.total/1.16*0.16,neto=r.total-iva;
+  items+='<tr><td style="color:#aaa;font-size:12px">Subtotal</td><td style="color:#aaa;font-size:12px">'+fmt(neto)+'</td></tr>';
+  items+='<tr><td style="color:#aaa;font-size:12px">IVA 16% incluido</td><td style="color:#aaa;font-size:12px">'+fmt(iva)+'</td></tr>';
+  g('cv_items').innerHTML=items;
+  g('cv_total').textContent=fmt(r.total);
+  if(r.fechaEntrega){
+    var fe=new Date(r.fechaEntrega+'T00:00:00').toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'});
+    g('cv_entrega_txt').textContent=fe+(r.horaEntrega?' a las '+r.horaEntrega:'');
+    g('cv_entrega').style.display='block';
+  } else g('cv_entrega').style.display='none';
+  g('clientModal').classList.add('show');
+}
+
+// WHATSAPP
+function sendWhatsApp(){
+  recalc();if(!lastResult) return;
+  var r=lastResult;
+  var rows=g('desglose_'+r.cat)?g('desglose_'+r.cat).querySelectorAll('.d-row:not(.total)'):[];
+  var conceptos='';
+  rows.forEach(function(row){
+    var sp=row.querySelectorAll('span');
+    var lbl=sp[0]?sp[0].textContent:'',val=sp[1]?sp[1].textContent:'';
+    if(val&&val!=='$0'&&lbl.indexOf('IVA')===-1&&lbl.indexOf('Subtotal')===-1)
+      conceptos+='  • '+lbl+': '+val+'\n';
+  });
+  var iva=r.total/1.16*0.16,neto=r.total-iva;
+  var fe=r.fechaEntrega?'\n📅 Entrega: '+new Date(r.fechaEntrega+'T00:00:00').toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'})+(r.horaEntrega?' a las '+r.horaEntrega:''):'';
+  var msg='Hola '+(r.cliente||'')+'! 👋\n\nTe comparto tu cotización de *IdeasQSolucionan*:\n\n'+conceptos+'\nSubtotal: '+fmt(neto)+'\nIVA (incluido): '+fmt(iva)+'\n*Total: '+fmt(r.total)+'*'+fe+'\n\nCotización válida por 7 días 😊';
+  var tel=g('wa_tel')?g('wa_tel').value:'';
+  window.open('https://wa.me/'+tel.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m) m.classList.remove('show');});});
+
+loadData();
+renderGrabadoPrecios();
+renderBasesItems();
+recalc();
+</script>
+</body>
+</html>

@@ -51,7 +51,7 @@ local-infra-down:
 local-setup:
 	cd backend && uv sync --group dev
 	cd frontend && pnpm install
-	@test -f frontend/.env.local || (cp frontend/.env.local.example frontend/.env.local && echo "Creado frontend/.env.local — edita NEXTAUTH_SECRET antes de iniciar")
+	@test -f frontend/.env.local || (cp frontend/.env.example frontend/.env.local && echo "Creado frontend/.env.local — edita NEXTAUTH_SECRET antes de iniciar")
 
 local-backend: export DATABASE_URL = $(LOCAL_DB_URL)
 local-backend: export REDIS_URL = $(LOCAL_REDIS_URL)

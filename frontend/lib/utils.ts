@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+let _counter = 0
+export function nanoid(): string {
+  return `${Date.now()}-${++_counter}`
+}
+
 export function formatDate(dateString: string): string {
   return new Intl.DateTimeFormat("es-MX", {
     dateStyle: "medium",

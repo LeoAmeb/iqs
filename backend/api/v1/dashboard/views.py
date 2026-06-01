@@ -1,52 +1,114 @@
 from datetime import timedelta
 
 from celery.app.control import Control
+from django.db.models import DecimalField, Q, Sum
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.v1.audit.serializers import AuditLogSerializer
 from api.v1.users.permissions import IsAdminOrSuperuser, require_permission
-from apps.audit.models import AuditLog
 from apps.dashboard.constants import Permissions
-from apps.roles.models import Role
-from apps.users.models import User
+from apps.productos.models import ConfiguracionSistema
+from apps.ventas.models import EstatusPedido, Pedido, PedidoItem
+
+
+def _cero():
+    return Coalesce(Sum("total"), 0, output_field=DecimalField())
+
+
+def _cero_costo():
+    return Coalesce(Sum("costo"), 0, output_field=DecimalField())
 
 
 @extend_schema(
     tags=["Dashboard"],
-    responses={
-        200: inline_serializer(
-            name="DashboardStats",
-            fields={
-                "total_users": serializers.IntegerField(),
-                "active_users": serializers.IntegerField(),
-                "new_users_30d": serializers.IntegerField(),
-                "roles_count": serializers.IntegerField(),
-                "recent_activity": AuditLogSerializer(many=True),
-            },
-        )
-    },
-    description="Returns high-level platform statistics for the admin dashboard.",
+    description="Retorna métricas IQS del mes en curso: ventas, costos, ganancias, meta y producción.",
 )
 class DashboardStatsView(APIView):
     permission_classes = [require_permission(Permissions.VIEW)]
 
     def get(self, request):
         now = timezone.now()
-        thirty_days_ago = now - timedelta(days=30)
+        inicio_mes = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        en_48h = now + timedelta(hours=48)
 
-        recent_activity = AuditLog.objects.select_related("user").order_by("-created_at")[:5]
+        pedidos_mes = Pedido.objects.filter(
+            created_at__gte=inicio_mes,
+            deleted_at__isnull=True,
+        ).exclude(estatus=EstatusPedido.CANCELADO)
+
+        totales = pedidos_mes.aggregate(
+            ventas=_cero(),
+            costos=_cero_costo(),
+        )
+        ventas = totales["ventas"] or 0
+        costos = totales["costos"] or 0
+        ganancia = ventas - costos
+        margen = round((ganancia / ventas * 100), 2) if ventas else 0
+
+        # IVA estimado sobre ventas (16%)
+        iva = round(ventas * 16 / 116, 2)
+
+        config = ConfiguracionSistema.get()
+        meta_mensual = config.meta_mensual
+
+        # Ventas por producto del mes
+        items_mes = (
+            PedidoItem.objects.filter(
+                pedido__created_at__gte=inicio_mes,
+                pedido__deleted_at__isnull=True,
+            )
+            .exclude(pedido__estatus=EstatusPedido.CANCELADO)
+            .values("nombre_producto")
+            .annotate(total_ventas=_cero())
+            .order_by("-total_ventas")[:10]
+        )
+
+        # Pedidos activos
+        pedidos_activos = Pedido.objects.filter(
+            deleted_at__isnull=True,
+        ).exclude(estatus__in=[EstatusPedido.ENTREGADO, EstatusPedido.CANCELADO])
+
+        pedidos_activos_count = pedidos_activos.count()
+
+        # Entregas próximas (≤ 48h)
+        entregas_proximas = pedidos_activos.filter(
+            fecha_entrega__isnull=False,
+            fecha_entrega__lte=en_48h.date(),
+        ).count()
+
+        # Saldo pendiente (anticipo no cubierto)
+        saldo_pendiente = (
+            pedidos_activos.aggregate(
+                saldo=Coalesce(
+                    Sum("total") - Sum("anticipo"),
+                    0,
+                    output_field=DecimalField(),
+                )
+            )["saldo"]
+            or 0
+        )
 
         return Response(
             {
-                "total_users": User.objects.count(),
-                "active_users": User.objects.filter(is_active=True).count(),
-                "new_users_30d": User.objects.filter(created_at__gte=thirty_days_ago).count(),
-                "roles_count": Role.objects.count(),
-                "recent_activity": AuditLogSerializer(recent_activity, many=True).data,
+                "periodo": {
+                    "inicio": inicio_mes.date().isoformat(),
+                    "hoy": now.date().isoformat(),
+                },
+                "ventas": ventas,
+                "costos": costos,
+                "iva": iva,
+                "ganancia": ganancia,
+                "margen": margen,
+                "meta_mensual": meta_mensual,
+                "avance_meta_pct": round(float(ventas) / float(meta_mensual) * 100, 1) if meta_mensual else 0,
+                "pedidos_activos": pedidos_activos_count,
+                "entregas_proximas_48h": entregas_proximas,
+                "saldo_pendiente": saldo_pendiente,
+                "top_productos": list(items_mes),
             }
         )
 
@@ -65,8 +127,8 @@ class DashboardStatsView(APIView):
         )
     },
     description=(
-        "Dispatches a no-op task to Celery and pings all active workers. "
-        "Use this to verify the broker connection and worker availability."
+        "Despacha una tarea no-op a Celery y hace ping a los workers activos. "
+        "Útil para verificar la conexión al broker."
     ),
 )
 class CeleryPingView(APIView):
@@ -75,12 +137,10 @@ class CeleryPingView(APIView):
     def post(self, request):
         from config.celery import app as celery_app, debug_task
 
-        # Ping workers with a 1-second timeout to collect active hostnames
         control = Control(celery_app)
         ping_responses = control.ping(timeout=1.0) or []
         workers = [list(r.keys())[0] for r in ping_responses if r]
 
-        # Dispatch a no-op task so we can confirm it reaches the queue
         task = debug_task.delay()
 
         return Response(
