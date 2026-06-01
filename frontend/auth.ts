@@ -11,8 +11,7 @@ const API_URL =
   process.env.NEXT_PUBLIC_API_URL ??
   "http://localhost:8000/api/v1"
 
-// Access tokens live 15 minutes on the Django backend.
-const ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000
+const ACCESS_TOKEN_TTL_MS = 24 * 60 * 60 * 1000
 
 async function refreshDjangoToken(token: JWT): Promise<JWT> {
   try {
