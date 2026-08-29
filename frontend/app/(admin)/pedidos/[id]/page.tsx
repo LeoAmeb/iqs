@@ -86,6 +86,7 @@ export default function PedidoDetallePage() {
   const folio = pedido.folio.toString().padStart(4, "0")
   const hoy = new Date().toISOString().slice(0, 10)
   const vencido = pedido.fecha_entrega && pedido.fecha_entrega < hoy
+  const saldoPendiente = Math.round((Number(pedido.total) - Number(pedido.anticipo)) * 100) / 100
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -140,6 +141,17 @@ export default function PedidoDetallePage() {
           <div>
             <p className="text-muted-foreground text-xs">Anticipo</p>
             <p className="font-medium">{formatMXN(Number(pedido.anticipo))}</p>
+          </div>
+          <div className="col-span-2">
+            {saldoPendiente > 0 ? (
+              <div className="rounded-md bg-amber-50 dark:bg-amber-950 px-3 py-2 text-amber-700 dark:text-amber-300 font-medium">
+                El cliente debe {formatMXN(saldoPendiente)}
+              </div>
+            ) : (
+              <div className="rounded-md bg-green-50 dark:bg-green-950 px-3 py-2 text-green-700 dark:text-green-300 font-medium">
+                Pedido liquidado
+              </div>
+            )}
           </div>
           {pedido.notas && (
             <div className="col-span-2">
