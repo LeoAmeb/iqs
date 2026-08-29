@@ -9,6 +9,7 @@ import {
   DollarSign,
   PackageCheck,
   AlertTriangle,
+  Wallet,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { API_ROUTES } from "@/lib/api-routes"
@@ -33,6 +34,7 @@ export default async function DashboardPage() {
   const stats = await serverFetch<DashboardIQS>(API_ROUTES.dashboard.stats).catch(() => null)
 
   const avance = Math.min(stats?.avance_meta_pct ?? 0, 100)
+  const totalPagos = stats?.pagos_por_forma?.reduce((s, p) => s + p.monto, 0) ?? 0
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -114,26 +116,51 @@ export default async function DashboardPage() {
 
         <GraficaVentas />
 
-        {/* Top productos */}
-        {stats?.top_productos && stats.top_productos.length > 0 && (
-          <Card>
-            <CardHeader className="flex flex-row items-center gap-2">
-              <Clock className="h-5 w-5 text-muted-foreground" />
-              <CardTitle>Top productos del mes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {stats.top_productos.map((p, i) => (
-                  <div key={p.nombre_producto} className="flex items-center gap-3">
-                    <span className="w-5 text-xs text-muted-foreground text-right">{i + 1}.</span>
-                    <span className="flex-1 text-sm truncate">{p.nombre_producto}</span>
-                    <span className="text-sm font-medium">{formatMXN(p.total_ventas)}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <div className="grid gap-4 lg:grid-cols-2">
+          {/* Top productos */}
+          {stats?.top_productos && stats.top_productos.length > 0 && (
+            <Card>
+              <CardHeader className="flex flex-row items-center gap-2">
+                <Clock className="h-5 w-5 text-muted-foreground" />
+                <CardTitle>Top productos del mes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {stats.top_productos.map((p, i) => (
+                    <div key={p.nombre_producto} className="flex items-center gap-3">
+                      <span className="w-5 text-xs text-muted-foreground text-right">{i + 1}.</span>
+                      <span className="flex-1 text-sm truncate">{p.nombre_producto}</span>
+                      <span className="text-sm font-medium">{formatMXN(p.total_ventas)}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Pagos del mes por forma de pago */}
+          {stats?.pagos_por_forma && stats.pagos_por_forma.length > 0 && (
+            <Card>
+              <CardHeader className="flex flex-row items-center gap-2">
+                <Wallet className="h-5 w-5 text-muted-foreground" />
+                <CardTitle>Pagos del mes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {stats.pagos_por_forma.map((p) => (
+                    <div key={p.forma_pago} className="flex items-center gap-3">
+                      <span className="flex-1 text-sm truncate">{p.forma_pago_label}</span>
+                      <span className="w-10 text-xs text-muted-foreground text-right">
+                        {totalPagos > 0 ? Math.round((p.monto / totalPagos) * 100) : 0}%
+                      </span>
+                      <span className="w-24 text-sm font-medium text-right">{formatMXN(p.monto)}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </HydrationBoundary>
   )

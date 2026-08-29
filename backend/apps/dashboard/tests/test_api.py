@@ -3,11 +3,12 @@ from datetime import UTC, datetime
 import pytest
 from django.contrib.auth.models import Group, Permission
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from apps.users.models import User
-from apps.ventas.models import Cotizacion, EstatusPedido, Pedido
+from apps.ventas.models import Cotizacion, EstatusPedido, FormaPago, Pedido
 
 
 @pytest.fixture
@@ -46,7 +47,10 @@ def client_dash(usuario_con_permiso):
     return client
 
 
-def _crear_pedido(folio, total, costo, creado_en, estatus=EstatusPedido.PENDIENTE, deleted_at=None):
+def _crear_pedido(
+    folio, total, costo, creado_en, estatus=EstatusPedido.PENDIENTE, deleted_at=None,
+    forma_pago="", anticipo="0",
+):
     """Crea un Pedido con `created_at` forzado a una fecha específica (auto_now_add ignora .create)."""
     cotizacion = Cotizacion.objects.create(folio=folio, total=total, costo=costo)
     pedido = Pedido.objects.create(
@@ -56,6 +60,8 @@ def _crear_pedido(folio, total, costo, creado_en, estatus=EstatusPedido.PENDIENT
         costo=costo,
         estatus=estatus,
         deleted_at=deleted_at,
+        forma_pago=forma_pago,
+        anticipo=anticipo,
     )
     Pedido.objects.filter(pk=pedido.pk).update(created_at=creado_en)
     return pedido
@@ -122,3 +128,32 @@ class TestDashboardVentasSerieView:
         client.force_authenticate(user=usuario_sin_permiso)
         resp = client.get(reverse("dashboard-ventas-serie"))
         assert resp.status_code == status.HTTP_403_FORBIDDEN
+
+
+class TestDashboardStatsView:
+    def test_desglosa_pagos_por_forma_de_pago(self, client_dash):
+        ahora = timezone.now()
+        _crear_pedido(101, "1000.00", "400.00", ahora, forma_pago=FormaPago.EFECTIVO, anticipo="1000.00")
+        _crear_pedido(102, "2000.00", "800.00", ahora, forma_pago=FormaPago.TRANSFERENCIA, anticipo="500.00")
+        _crear_pedido(103, "3000.00", "900.00", ahora, forma_pago=FormaPago.TRANSFERENCIA, anticipo="700.00")
+
+        resp = client_dash.get(reverse("dashboard-stats"))
+
+        assert resp.status_code == status.HTTP_200_OK
+        pagos = {p["forma_pago"]: p["monto"] for p in resp.data["pagos_por_forma"]}
+        assert pagos["efectivo"] == 1000
+        assert pagos["transferencia"] == 1200
+        assert pagos["tarjeta"] == 0
+
+    def test_excluye_cancelados_del_desglose_de_pagos(self, client_dash):
+        ahora = timezone.now()
+        _crear_pedido(
+            104, "1000.00", "400.00", ahora,
+            forma_pago=FormaPago.EFECTIVO, anticipo="1000.00", estatus=EstatusPedido.CANCELADO,
+        )
+
+        resp = client_dash.get(reverse("dashboard-stats"))
+
+        assert resp.status_code == status.HTTP_200_OK
+        pagos = {p["forma_pago"]: p["monto"] for p in resp.data["pagos_por_forma"]}
+        assert pagos["efectivo"] == 0

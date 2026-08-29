@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from api.v1.users.permissions import IsAdminOrSuperuser, require_permission
 from apps.dashboard.constants import Permissions
 from apps.productos.models import ConfiguracionSistema
-from apps.ventas.models import EstatusPedido, Pedido, PedidoItem
+from apps.ventas.models import EstatusPedido, FormaPago, Pedido, PedidoItem
 
 
 def _cero():
@@ -22,6 +22,10 @@ def _cero():
 
 def _cero_costo():
     return Coalesce(Sum("costo"), 0, output_field=DecimalField())
+
+
+def _cero_anticipo():
+    return Coalesce(Sum("anticipo"), 0, output_field=DecimalField())
 
 
 def _primer_dia_mes(fecha: date, meses_atras: int) -> date:
@@ -76,6 +80,21 @@ class DashboardStatsView(APIView):
             .order_by("-total_ventas")[:10]
         )
 
+        # Pagos del mes (anticipo cobrado) desglosados por forma de pago
+        montos_por_forma = {
+            row["forma_pago"]: row["monto"]
+            for row in pedidos_mes.values("forma_pago").annotate(monto=_cero_anticipo())
+        }
+        pagos_por_forma = [
+            {"forma_pago": valor, "forma_pago_label": label, "monto": montos_por_forma.pop(valor, 0)}
+            for valor, label in FormaPago.choices
+        ]
+        monto_sin_especificar = sum(montos_por_forma.values())
+        if monto_sin_especificar:
+            pagos_por_forma.append(
+                {"forma_pago": "", "forma_pago_label": "Sin especificar", "monto": monto_sin_especificar}
+            )
+
         # Pedidos activos
         pedidos_activos = Pedido.objects.filter(
             deleted_at__isnull=True,
@@ -118,6 +137,7 @@ class DashboardStatsView(APIView):
                 "entregas_proximas_48h": entregas_proximas,
                 "saldo_pendiente": saldo_pendiente,
                 "top_productos": list(items_mes),
+                "pagos_por_forma": pagos_por_forma,
             }
         )
 

@@ -69,6 +69,7 @@ export interface DashboardIQS {
   entregas_proximas_48h: number
   saldo_pendiente: number
   top_productos: { nombre_producto: string; total_ventas: number }[]
+  pagos_por_forma: { forma_pago: string; forma_pago_label: string; monto: number }[]
 }
 
 export interface VentaSerieItem {
