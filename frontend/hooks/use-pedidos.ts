@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import axios from "axios"
 import { toast } from "sonner"
 import api from "@/lib/api"
 import { API_ROUTES } from "@/lib/api-routes"
@@ -181,6 +182,12 @@ export function useCrearCotizacion() {
       qc.invalidateQueries({ queryKey: ["clientes"] })
       toast.success(`Cotización #${String(cotizacion.folio).padStart(4, "0")} creada`)
     },
-    onError: () => toast.error("Error al crear la cotización"),
+    onError: (error) => {
+      const errores = axios.isAxiosError(error) ? error.response?.data?.errors : undefined
+      const detalle = errores
+        ? Object.values(errores as Record<string, string[]>).flat().join(" ")
+        : ""
+      toast.error(detalle || "Error al crear la cotización")
+    },
   })
 }

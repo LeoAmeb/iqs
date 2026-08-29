@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -31,7 +32,7 @@ const schemaDatosCliente = z.object({
   email: z.string().email("Email inválido").optional().or(z.literal("")),
   fecha_entrega: z.string().optional(),
   anticipo: z.number().min(0).optional(),
-  forma_pago: z.string().optional(),
+  forma_pago: z.enum(["efectivo", "transferencia", "tarjeta"]).optional(),
   notas: z.string().optional(),
 })
 
@@ -142,6 +143,7 @@ export default function CotizadorPage() {
     const cotizacion = await crearCotizacion.mutateAsync({
       cliente_id: clienteSeleccionado?.id ?? null,
       ...datos,
+      fecha_entrega: datos.fecha_entrega || undefined,
       total: totales.total,
       costo: totales.costo,
       iva: totales.iva,
@@ -481,11 +483,31 @@ export default function CotizadorPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label htmlFor="anticipo">Anticipo</Label>
-                <Input id="anticipo" type="number" {...form.register("anticipo", { valueAsNumber: true })} />
+                <Input
+                  id="anticipo"
+                  type="number"
+                  min={0}
+                  {...form.register("anticipo", { setValueAs: (v) => (v === "" ? 0 : Number(v)) })}
+                />
+                {form.formState.errors.anticipo && (
+                  <p className="text-xs text-destructive">{form.formState.errors.anticipo.message}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="forma_pago">Forma de pago</Label>
-                <Input id="forma_pago" {...form.register("forma_pago")} placeholder="efectivo..." />
+                <Select
+                  value={form.watch("forma_pago") ?? ""}
+                  onValueChange={(v) => form.setValue("forma_pago", v as "efectivo" | "transferencia" | "tarjeta")}
+                >
+                  <SelectTrigger id="forma_pago">
+                    <SelectValue placeholder="Selecciona..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="efectivo">Efectivo</SelectItem>
+                    <SelectItem value="transferencia">Transferencia</SelectItem>
+                    <SelectItem value="tarjeta">Tarjeta</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

@@ -122,6 +122,25 @@ class TestCotizacionViewSet:
         resp = client_emp.post(url, payload, format="json")
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
 
+    def test_forma_pago_invalida_devuelve_400(self, client_emp, producto):
+        """Solo se aceptan los valores del catálogo (efectivo/transferencia/tarjeta)."""
+        payload = _payload_cotizacion(producto.pk)
+        payload["forma_pago"] = "Efectivo en dolares"
+        resp = client_emp.post(reverse("cotizacion-list"), payload, format="json")
+        assert resp.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_forma_pago_valida_se_guarda_y_se_copia_al_pedido(self, client_emp, producto):
+        payload = _payload_cotizacion(producto.pk)
+        payload["forma_pago"] = "transferencia"
+        resp = client_emp.post(reverse("cotizacion-list"), payload, format="json")
+        assert resp.status_code == status.HTTP_201_CREATED
+        assert resp.data["forma_pago"] == "transferencia"
+
+        cotizacion_id = resp.data["id"]
+        client_emp.post(reverse("cotizacion-proceder", args=[cotizacion_id]))
+        pedido = Pedido.objects.get(cotizacion_id=cotizacion_id)
+        assert pedido.forma_pago == "transferencia"
+
     def test_folios_son_unicos_y_secuenciales(self, client_emp, producto):
         url = reverse("cotizacion-list")
         resp1 = client_emp.post(url, _payload_cotizacion(producto.pk), format="json")

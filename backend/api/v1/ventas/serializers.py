@@ -7,6 +7,7 @@ from apps.ventas.models import (
     Cotizacion,
     CotizacionItem,
     FolioCounter,
+    FormaPago,
     Pedido,
     PedidoItem,
     PedidoItemLog,
@@ -54,7 +55,7 @@ class CotizacionCreateSerializer(serializers.Serializer):
     fecha_entrega = serializers.DateField(required=False, allow_null=True)
     hora_entrega = serializers.TimeField(required=False, allow_null=True)
     anticipo = serializers.DecimalField(max_digits=10, decimal_places=2, default=0)
-    forma_pago = serializers.CharField(max_length=20, allow_blank=True, default="")
+    forma_pago = serializers.ChoiceField(choices=FormaPago.choices, allow_blank=True, default="")
     notas = serializers.CharField(allow_blank=True, default="")
 
     total = serializers.DecimalField(max_digits=10, decimal_places=2)
