@@ -16,6 +16,7 @@ export const API_ROUTES = {
   },
   dashboard: {
     stats: "/dashboard/stats/",
+    ventasSerie: "/dashboard/ventas-serie/",
     celeryPing: "/dashboard/celery-ping/",
   },
   clientes: {

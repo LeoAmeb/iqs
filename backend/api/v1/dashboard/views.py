@@ -1,9 +1,10 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 from celery.app.control import Control
-from django.db.models import DecimalField, Q, Sum
-from django.db.models.functions import Coalesce
+from django.db.models import DateField, DecimalField, Q, Sum
+from django.db.models.functions import Coalesce, TruncDate, TruncMonth
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers, status
 from rest_framework.response import Response
@@ -21,6 +22,14 @@ def _cero():
 
 def _cero_costo():
     return Coalesce(Sum("costo"), 0, output_field=DecimalField())
+
+
+def _primer_dia_mes(fecha: date, meses_atras: int) -> date:
+    """Primer día del mes que está `meses_atras` meses antes de `fecha`."""
+    mes_total = fecha.month - 1 - meses_atras
+    anio = fecha.year + mes_total // 12
+    mes = mes_total % 12 + 1
+    return date(anio, mes, 1)
 
 
 @extend_schema(
@@ -109,6 +118,65 @@ class DashboardStatsView(APIView):
                 "entregas_proximas_48h": entregas_proximas,
                 "saldo_pendiente": saldo_pendiente,
                 "top_productos": list(items_mes),
+            }
+        )
+
+
+@extend_schema(
+    tags=["Dashboard"],
+    description=(
+        "Serie histórica de ventas, costos y ganancia agrupada por mes. "
+        "Acepta `desde` y `hasta` (YYYY-MM-DD); por omisión, los últimos 6 meses. "
+        "Si el rango cabe en poco más de un mes (35 días o menos), agrupa por día en vez de por mes."
+    ),
+)
+class DashboardVentasSerieView(APIView):
+    permission_classes = [require_permission(Permissions.VIEW)]
+
+    def get(self, request):
+        hoy = timezone.localdate()
+        hasta = parse_date(request.query_params.get("hasta", "")) or hoy
+        desde = parse_date(request.query_params.get("desde", "")) or _primer_dia_mes(hoy, 5)
+
+        if desde > hasta:
+            desde, hasta = hasta, desde
+
+        por_dia = (hasta - desde).days <= 35
+        trunc = (
+            TruncDate("created_at", output_field=DateField())
+            if por_dia
+            else TruncMonth("created_at", output_field=DateField())
+        )
+
+        pedidos_rango = Pedido.objects.filter(
+            created_at__date__gte=desde,
+            created_at__date__lte=hasta,
+            deleted_at__isnull=True,
+        ).exclude(estatus=EstatusPedido.CANCELADO)
+
+        serie_qs = (
+            pedidos_rango.annotate(periodo=trunc)
+            .values("periodo")
+            .annotate(ventas=_cero(), costos=_cero_costo())
+            .order_by("periodo")
+        )
+
+        serie = [
+            {
+                "periodo": row["periodo"].isoformat(),
+                "ventas": row["ventas"],
+                "costos": row["costos"],
+                "ganancia": row["ventas"] - row["costos"],
+            }
+            for row in serie_qs
+        ]
+
+        return Response(
+            {
+                "desde": desde.isoformat(),
+                "hasta": hasta.isoformat(),
+                "agrupacion": "dia" if por_dia else "mes",
+                "serie": serie,
             }
         )
 

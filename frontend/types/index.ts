@@ -71,6 +71,20 @@ export interface DashboardIQS {
   top_productos: { nombre_producto: string; total_ventas: number }[]
 }
 
+export interface VentaSerieItem {
+  periodo: string
+  ventas: number
+  costos: number
+  ganancia: number
+}
+
+export interface VentasSerieResponse {
+  desde: string
+  hasta: string
+  agrupacion: "dia" | "mes"
+  serie: VentaSerieItem[]
+}
+
 export interface PaginatedResponse<T> {
   count: number
   next: string | null

@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { API_ROUTES } from "@/lib/api-routes"
 import type { DashboardIQS } from "@/types"
+import { GraficaVentas } from "./_components/grafica-ventas"
 
 function formatMXN(value: number): string {
   return new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 }).format(value)
@@ -110,6 +111,8 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        <GraficaVentas />
 
         {/* Top productos */}
         {stats?.top_productos && stats.top_productos.length > 0 && (
