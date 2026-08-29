@@ -128,7 +128,7 @@ class PedidoViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["estatus"]
     search_fields = ["nombre_cliente", "telefono", "folio"]
-    ordering_fields = ["folio", "fecha_entrega", "created_at", "estatus"]
+    ordering_fields = ["folio", "nombre_cliente", "fecha_entrega", "total", "created_at", "estatus"]
     ordering = ["-created_at"]
 
     def get_queryset(self):

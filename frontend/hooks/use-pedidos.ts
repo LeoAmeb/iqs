@@ -19,6 +19,7 @@ interface PedidosParams {
   todos?: "1"
   pendientes?: "1"
   entrega?: "hoy" | "semana" | "vencido"
+  ordering?: string
   page_size?: number
 }
 

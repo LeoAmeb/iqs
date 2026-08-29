@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Search, Eye, X } from "lucide-react"
+import { Search, Eye, X, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -10,10 +10,14 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 import { usePedidos } from "@/hooks/use-pedidos"
 import { formatMXN } from "@/lib/cotizador/calculos"
 import type { EstatusPedido, PedidoResumen } from "@/types"
+
+type SortField = "folio" | "nombre_cliente" | "fecha_entrega" | "total"
+type SortDir = "asc" | "desc"
 
 type FiltroEntrega = "" | "hoy" | "semana" | "vencido"
 
@@ -70,13 +74,28 @@ function PedidosContent() {
   const [filtroEntrega, setFiltroEntrega] = useState<FiltroEntrega>(
     (searchParams.get("entrega") as FiltroEntrega) || ""
   )
+  const [sortField, setSortField] = useState<SortField | "">("")
+  const [sortDir, setSortDir] = useState<SortDir>("asc")
   const [page, setPage] = useState(1)
+
+  function toggleSort(field: SortField) {
+    if (sortField !== field) {
+      setSortField(field)
+      setSortDir("asc")
+    } else if (sortDir === "asc") {
+      setSortDir("desc")
+    } else {
+      setSortField("")
+    }
+    setPage(1)
+  }
 
   const { data, isLoading } = usePedidos({
     search: search || undefined,
     estatus: estatus || undefined,
     pendientes: soloPendientes ? "1" : undefined,
     entrega: filtroEntrega || undefined,
+    ordering: sortField ? (sortDir === "desc" ? `-${sortField}` : sortField) : undefined,
     page,
   })
 
@@ -138,27 +157,68 @@ function PedidosContent() {
         </Select>
       </div>
 
-      {/* Lista */}
-      {isLoading ? (
-        <div className="space-y-2">
-          {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {data?.results.map((pedido) => (
-            <PedidoCard
-              key={pedido.id}
-              pedido={pedido}
-              onVer={() => router.push(`/pedidos/${pedido.id}`)}
-            />
-          ))}
-          {data?.results.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              No se encontraron pedidos
-            </div>
-          )}
-        </div>
-      )}
+      {/* Tabla — escritorio */}
+      <div className="hidden md:block rounded-lg border bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <SortableHead field="folio" label="Folio" sortField={sortField} sortDir={sortDir} onSort={toggleSort} />
+              <SortableHead field="nombre_cliente" label="Cliente" sortField={sortField} sortDir={sortDir} onSort={toggleSort} />
+              <TableHead>Estatus</TableHead>
+              <SortableHead field="fecha_entrega" label="Entrega" sortField={sortField} sortDir={sortDir} onSort={toggleSort} />
+              <SortableHead field="total" label="Total" sortField={sortField} sortDir={sortDir} onSort={toggleSort} className="text-right" />
+              <TableHead className="text-right">Anticipo</TableHead>
+              <TableHead className="text-right">Saldo</TableHead>
+              <TableHead className="w-12"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={i}>
+                  {Array.from({ length: 8 }).map((__, j) => (
+                    <TableCell key={j}><Skeleton className="h-4 w-full" /></TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : !data?.results.length ? (
+              <TableRow>
+                <TableCell colSpan={8} className="h-32 text-center text-muted-foreground">
+                  No se encontraron pedidos
+                </TableCell>
+              </TableRow>
+            ) : (
+              data.results.map((pedido) => (
+                <PedidoRow key={pedido.id} pedido={pedido} onVer={() => router.push(`/pedidos/${pedido.id}`)} />
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Tarjetas — móvil */}
+      <div className="md:hidden">
+        {isLoading ? (
+          <div className="space-y-2">
+            {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {data?.results.map((pedido) => (
+              <PedidoCard
+                key={pedido.id}
+                pedido={pedido}
+                onVer={() => router.push(`/pedidos/${pedido.id}`)}
+              />
+            ))}
+            {data?.results.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                No se encontraron pedidos
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Paginación */}
       {data && (data.next || data.previous) && (
@@ -180,6 +240,75 @@ export default function PedidosPage() {
     <Suspense>
       <PedidosContent />
     </Suspense>
+  )
+}
+
+function SortableHead({
+  field,
+  label,
+  sortField,
+  sortDir,
+  onSort,
+  className,
+}: {
+  field: SortField
+  label: string
+  sortField: SortField | ""
+  sortDir: SortDir
+  onSort: (field: SortField) => void
+  className?: string
+}) {
+  const activo = sortField === field
+  return (
+    <TableHead className={`cursor-pointer select-none ${className ?? ""}`} onClick={() => onSort(field)}>
+      <span className={`inline-flex items-center gap-1 ${className?.includes("text-right") ? "flex-row-reverse" : ""}`}>
+        {label}
+        {activo ? (
+          sortDir === "asc" ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />
+        ) : (
+          <ArrowUpDown className="h-3.5 w-3.5 opacity-30" />
+        )}
+      </span>
+    </TableHead>
+  )
+}
+
+function PedidoRow({
+  pedido,
+  onVer,
+}: {
+  pedido: PedidoResumen
+  onVer: () => void
+}) {
+  const folio = pedido.folio.toString().padStart(4, "0")
+  const urgencia = urgenciaEntrega(pedido.fecha_entrega)
+  const saldo = Math.round((Number(pedido.total) - Number(pedido.anticipo)) * 100) / 100
+
+  return (
+    <TableRow className="cursor-pointer" onClick={onVer}>
+      <TableCell className="font-mono text-sm font-bold">#{folio}</TableCell>
+      <TableCell className="font-medium">{pedido.nombre_cliente}</TableCell>
+      <TableCell>
+        <Badge variant={ESTATUS_VARIANT[pedido.estatus]}>{ESTATUS_LABELS[pedido.estatus]}</Badge>
+      </TableCell>
+      <TableCell className={`text-sm ${urgencia?.color ?? "text-muted-foreground"}`}>
+        {urgencia?.label ?? "—"}
+      </TableCell>
+      <TableCell className="text-right font-medium">{formatMXN(Number(pedido.total))}</TableCell>
+      <TableCell className="text-right text-muted-foreground">{formatMXN(Number(pedido.anticipo))}</TableCell>
+      <TableCell className="text-right">
+        {saldo > 0 ? (
+          <span className="text-amber-600 dark:text-amber-400 font-medium">{formatMXN(saldo)}</span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        )}
+      </TableCell>
+      <TableCell>
+        <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); onVer() }}>
+          <Eye className="h-4 w-4" />
+        </Button>
+      </TableCell>
+    </TableRow>
   )
 }
 

@@ -248,6 +248,17 @@ class TestPedidoViewSet:
 
         assert folios.index(cercano.folio) < folios.index(lejano.folio) < folios.index(sin_fecha.folio)
 
+    def test_ordering_explicito_sobrescribe_el_default(self, client_emp, producto):
+        barato = _crear_pedido(client_emp, producto)
+        Pedido.objects.filter(pk=barato.pk).update(total="100.00")
+        caro = _crear_pedido(client_emp, producto)
+        Pedido.objects.filter(pk=caro.pk).update(total="900.00")
+
+        resp = client_emp.get(reverse("pedido-list"), {"ordering": "-total"})
+        folios = [p["folio"] for p in resp.data["results"]]
+
+        assert folios.index(caro.folio) < folios.index(barato.folio)
+
 
 class TestProduccionViewSet:
     def test_listar_items_produccion(self, client_emp, producto):
