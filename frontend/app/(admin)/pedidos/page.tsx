@@ -28,8 +28,11 @@ const FILTROS_ENTREGA: { id: FiltroEntrega; label: string }[] = [
 ]
 
 /** Urgencia por fecha de entrega, independiente del estatus manual del pedido. */
-function urgenciaEntrega(fechaEntrega: string | null) {
+function urgenciaEntrega(fechaEntrega: string | null, estatus: EstatusPedido) {
   if (!fechaEntrega) return null
+  if (estatus === "entregado" || estatus === "cancelado") {
+    return { color: "text-muted-foreground", label: `Entrega: ${fechaEntrega}` }
+  }
   const hoy = new Date()
   hoy.setHours(0, 0, 0, 0)
   const fecha = new Date(`${fechaEntrega}T00:00:00`)
@@ -281,7 +284,7 @@ function PedidoRow({
   onVer: () => void
 }) {
   const folio = pedido.folio.toString().padStart(4, "0")
-  const urgencia = urgenciaEntrega(pedido.fecha_entrega)
+  const urgencia = urgenciaEntrega(pedido.fecha_entrega, pedido.estatus)
   const saldo = Math.round((Number(pedido.total) - Number(pedido.anticipo)) * 100) / 100
 
   return (
@@ -320,7 +323,7 @@ function PedidoCard({
   onVer: () => void
 }) {
   const folio = pedido.folio.toString().padStart(4, "0")
-  const urgencia = urgenciaEntrega(pedido.fecha_entrega)
+  const urgencia = urgenciaEntrega(pedido.fecha_entrega, pedido.estatus)
   const saldo = Math.round((Number(pedido.total) - Number(pedido.anticipo)) * 100) / 100
 
   return (
