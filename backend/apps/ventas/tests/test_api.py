@@ -191,6 +191,20 @@ class TestPedidoViewSet:
         folios = [p["folio"] for p in resp.data["results"]]
         assert pedido.folio not in folios
 
+    def test_filtro_pendientes_excluye_entregados_y_cancelados(self, client_emp, producto):
+        activo = _crear_pedido(client_emp, producto)
+        entregado = _crear_pedido(client_emp, producto)
+        client_emp.patch(reverse("pedido-detail", args=[entregado.pk]), {"estatus": "entregado"}, format="json")
+        cancelado = _crear_pedido(client_emp, producto)
+        client_emp.patch(reverse("pedido-detail", args=[cancelado.pk]), {"estatus": "cancelado"}, format="json")
+
+        resp = client_emp.get(reverse("pedido-list"), {"pendientes": "1"})
+
+        folios = [p["folio"] for p in resp.data["results"]]
+        assert activo.folio in folios
+        assert entregado.folio not in folios
+        assert cancelado.folio not in folios
+
 
 class TestProduccionViewSet:
     def test_listar_items_produccion(self, client_emp, producto):

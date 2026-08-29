@@ -1,5 +1,6 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 import { auth } from "@/auth"
 import { serverFetch } from "@/lib/api-server"
 import {
@@ -102,16 +103,18 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Saldo pendiente</CardTitle>
-              <PackageCheck className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatMXN(stats?.saldo_pendiente ?? 0)}</div>
-              <p className="text-xs text-muted-foreground">Por cobrar</p>
-            </CardContent>
-          </Card>
+          <Link href="/pedidos?pendientes=1">
+            <Card className="hover:shadow-sm transition-shadow cursor-pointer h-full">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Saldo pendiente</CardTitle>
+                <PackageCheck className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatMXN(stats?.saldo_pendiente ?? 0)}</div>
+                <p className="text-xs text-muted-foreground">Por cobrar · ver pedidos pendientes</p>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         <GraficaVentas />

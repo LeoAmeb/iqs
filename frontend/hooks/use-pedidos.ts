@@ -17,6 +17,7 @@ interface PedidosParams {
   search?: string
   estatus?: EstatusPedido
   todos?: "1"
+  pendientes?: "1"
   page_size?: number
 }
 

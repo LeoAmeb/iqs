@@ -137,6 +137,10 @@ class PedidoViewSet(ModelViewSet):
         # Por defecto solo activos; ?todos=1 incluye eliminados
         if self.request.query_params.get("todos") != "1":
             qs = qs.filter(deleted_at__isnull=True)
+        # ?pendientes=1 — mismo criterio que "saldo_pendiente" del dashboard:
+        # pedidos sin entregar ni cancelar.
+        if self.request.query_params.get("pendientes") == "1":
+            qs = qs.exclude(estatus__in=[EstatusPedido.ENTREGADO, EstatusPedido.CANCELADO])
         return qs
 
     def get_serializer_class(self):

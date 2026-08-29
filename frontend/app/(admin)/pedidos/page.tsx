@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Search, Eye } from "lucide-react"
+import { Suspense, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Search, Eye, X } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -35,15 +35,18 @@ export const ESTATUS_VARIANT: Record<EstatusPedido, "default" | "secondary" | "d
   cancelado: "destructive",
 }
 
-export default function PedidosPage() {
+function PedidosContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [search, setSearch] = useState("")
   const [estatus, setEstatus] = useState<EstatusPedido | "">("")
+  const [soloPendientes, setSoloPendientes] = useState(searchParams.get("pendientes") === "1")
   const [page, setPage] = useState(1)
 
   const { data, isLoading } = usePedidos({
     search: search || undefined,
     estatus: estatus || undefined,
+    pendientes: soloPendientes ? "1" : undefined,
     page,
   })
 
@@ -53,6 +56,19 @@ export default function PedidosPage() {
         <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
         <p className="text-muted-foreground">Gestión de pedidos activos</p>
       </div>
+
+      {/* Filtro activo: pendientes */}
+      {soloPendientes && (
+        <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800 w-fit">
+          <span>Mostrando solo pedidos pendientes (sin entregar ni cancelar)</span>
+          <button
+            onClick={() => { setSoloPendientes(false); setPage(1) }}
+            className="hover:text-amber-900 dark:hover:text-amber-100"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Filtros */}
       <div className="flex gap-3">
@@ -112,6 +128,14 @@ export default function PedidosPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function PedidosPage() {
+  return (
+    <Suspense>
+      <PedidosContent />
+    </Suspense>
   )
 }
 
