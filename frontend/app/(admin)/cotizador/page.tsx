@@ -20,7 +20,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { useCotizadorConfig } from "@/hooks/use-productos"
 import { useCrearCotizacion } from "@/hooks/use-pedidos"
 import { useClientes } from "@/hooks/use-clientes"
-import { totalesCarrito, formatMXN } from "@/lib/cotizador/calculos"
+import { totalesCarrito, formatMXN, aplicarDescuento } from "@/lib/cotizador/calculos"
 import { FormularioProducto } from "./_components/formulario-producto"
 import type { Categoria, CarritoItem, Cliente } from "@/types"
 import { nanoid } from "@/lib/utils"
@@ -127,6 +127,17 @@ export default function CotizadorPage() {
     setCarrito((prev) => prev.filter((i) => i._id !== id))
   }
 
+  function actualizarDescuento(id: string, descuentoPct: number) {
+    const pct = Math.min(Math.max(descuentoPct, 0), 100)
+    setCarrito((prev) =>
+      prev.map((item) => {
+        if (item._id !== id) return item
+        const recalculado = aplicarDescuento(item, pct)
+        return { ...item, ...recalculado, descuento_pct: pct || undefined }
+      })
+    )
+  }
+
   async function confirmarCotizacion(datos: DatosCliente) {
     const cotizacion = await crearCotizacion.mutateAsync({
       cliente_id: clienteSeleccionado?.id ?? null,
@@ -149,7 +160,7 @@ export default function CotizadorPage() {
         costo: item.costo,
         ganancia: item.ganancia,
         margen: item.margen,
-        detalles: item.detalles,
+        detalles: item.descuento_pct ? { ...item.detalles, descuento_pct: item.descuento_pct } : item.detalles,
       })),
     })
     setCarrito([])
@@ -197,8 +208,30 @@ export default function CotizadorPage() {
                   <p className="font-medium leading-tight truncate">{item.nombre_producto}</p>
                   <p className="text-muted-foreground text-xs truncate">{item.descripcion}</p>
                   <p className="text-xs">
-                    {item.cantidad} × {formatMXN(item.precio_unit)} = {formatMXN(item.total)}
+                    {item.cantidad} × {formatMXN(item.precio_unit)} ={" "}
+                    {item.descuento_pct ? (
+                      <>
+                        <span className="line-through text-muted-foreground mr-1">
+                          {formatMXN(item.precio_unit * item.cantidad)}
+                        </span>
+                        <span className="font-medium">{formatMXN(item.total)}</span>
+                      </>
+                    ) : (
+                      formatMXN(item.total)
+                    )}
                   </p>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={item.descuento_pct ?? ""}
+                      onChange={(e) => actualizarDescuento(item._id, Number(e.target.value) || 0)}
+                      placeholder="0"
+                      className="h-6 w-14 text-xs px-1.5"
+                    />
+                    <span className="text-xs text-muted-foreground">% desc.</span>
+                  </div>
                 </div>
                 <button
                   onClick={() => quitarDelCarrito(item._id)}

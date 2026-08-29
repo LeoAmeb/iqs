@@ -335,6 +335,8 @@ export interface CarritoItem {
   costo: number
   ganancia: number
   margen: number
+  /** % de descuento manual aplicado sobre precio_unit (0-100) */
+  descuento_pct?: number
   /** inputs del formulario + config_snapshot de la categoría */
   detalles: Record<string, unknown>
 }

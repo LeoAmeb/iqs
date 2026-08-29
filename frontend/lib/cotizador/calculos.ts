@@ -253,3 +253,20 @@ export function totalesCarrito(items: { total: number; costo: number; iva: numbe
   const margen = total > 0 ? (ganancia / total) * 100 : 0
   return { total, costo, ganancia, margen: Math.round(margen * 100) / 100, iva }
 }
+
+/**
+ * Recalcula total/iva/ganancia/margen de un ítem del carrito aplicando un
+ * descuento manual sobre su precio unitario. Siempre parte de `precio_unit`
+ * (nunca de un `total` ya descontado) para que ajustar el % no lo componga.
+ */
+export function aplicarDescuento(
+  item: { precio_unit: number; cantidad: number; costo: number },
+  descuentoPct: number
+): Pick<ResultadoCalculo, "total" | "iva" | "ganancia" | "margen"> {
+  const pct = Math.min(Math.max(descuentoPct, 0), 100)
+  const total = r2(item.precio_unit * item.cantidad * (1 - pct / 100))
+  const iva = r2((total / 1.16) * 0.16)
+  const ganancia = r2(total - item.costo - iva)
+  const margen = total > 0 ? Math.round((ganancia / total) * 10000) / 100 : 0
+  return { total, iva, ganancia, margen }
+}
