@@ -15,6 +15,32 @@ import { usePedidos } from "@/hooks/use-pedidos"
 import { formatMXN } from "@/lib/cotizador/calculos"
 import type { EstatusPedido, PedidoResumen } from "@/types"
 
+type FiltroEntrega = "" | "hoy" | "semana" | "vencido"
+
+const FILTROS_ENTREGA: { id: FiltroEntrega; label: string }[] = [
+  { id: "vencido", label: "Vencidos" },
+  { id: "hoy", label: "Hoy" },
+  { id: "semana", label: "Próximos 7 días" },
+]
+
+/** Urgencia por fecha de entrega, independiente del estatus manual del pedido. */
+function urgenciaEntrega(fechaEntrega: string | null) {
+  if (!fechaEntrega) return null
+  const hoy = new Date()
+  hoy.setHours(0, 0, 0, 0)
+  const fecha = new Date(`${fechaEntrega}T00:00:00`)
+  const dias = Math.round((fecha.getTime() - hoy.getTime()) / 86_400_000)
+
+  if (dias < 0) {
+    const n = -dias
+    return { color: "text-destructive font-medium", label: `Vencido hace ${n} día${n === 1 ? "" : "s"} (${fechaEntrega})` }
+  }
+  if (dias === 0) return { color: "text-amber-600 dark:text-amber-400 font-medium", label: "Entrega hoy" }
+  if (dias === 1) return { color: "text-amber-600 dark:text-amber-400 font-medium", label: "Entrega mañana" }
+  if (dias === 2) return { color: "text-amber-600 dark:text-amber-400 font-medium", label: `Entrega en 2 días (${fechaEntrega})` }
+  return { color: "text-muted-foreground", label: `Entrega: ${fechaEntrega}` }
+}
+
 export const ESTATUS_LABELS: Record<EstatusPedido, string> = {
   pendiente: "Pendiente",
   proximo: "Próximo",
@@ -41,12 +67,16 @@ function PedidosContent() {
   const [search, setSearch] = useState("")
   const [estatus, setEstatus] = useState<EstatusPedido | "">("")
   const [soloPendientes, setSoloPendientes] = useState(searchParams.get("pendientes") === "1")
+  const [filtroEntrega, setFiltroEntrega] = useState<FiltroEntrega>(
+    (searchParams.get("entrega") as FiltroEntrega) || ""
+  )
   const [page, setPage] = useState(1)
 
   const { data, isLoading } = usePedidos({
     search: search || undefined,
     estatus: estatus || undefined,
     pendientes: soloPendientes ? "1" : undefined,
+    entrega: filtroEntrega || undefined,
     page,
   })
 
@@ -69,6 +99,20 @@ function PedidosContent() {
           </button>
         </div>
       )}
+
+      {/* Filtros rápidos por fecha de entrega */}
+      <div className="flex flex-wrap gap-1.5">
+        {FILTROS_ENTREGA.map((f) => (
+          <Button
+            key={f.id}
+            size="sm"
+            variant={filtroEntrega === f.id ? "default" : "outline"}
+            onClick={() => { setFiltroEntrega(filtroEntrega === f.id ? "" : f.id); setPage(1) }}
+          >
+            {f.label}
+          </Button>
+        ))}
+      </div>
 
       {/* Filtros */}
       <div className="flex gap-3">
@@ -147,8 +191,8 @@ function PedidoCard({
   onVer: () => void
 }) {
   const folio = pedido.folio.toString().padStart(4, "0")
-  const hoy = new Date().toISOString().slice(0, 10)
-  const vencido = pedido.fecha_entrega && pedido.fecha_entrega < hoy
+  const urgencia = urgenciaEntrega(pedido.fecha_entrega)
+  const saldo = Math.round((Number(pedido.total) - Number(pedido.anticipo)) * 100) / 100
 
   return (
     <Card className="hover:shadow-sm transition-shadow cursor-pointer" onClick={onVer}>
@@ -159,15 +203,14 @@ function PedidoCard({
             <Badge variant={ESTATUS_VARIANT[pedido.estatus]}>{ESTATUS_LABELS[pedido.estatus]}</Badge>
           </div>
           <p className="font-medium truncate">{pedido.nombre_cliente}</p>
-          {pedido.fecha_entrega && (
-            <p className={`text-xs ${vencido ? "text-destructive font-medium" : "text-muted-foreground"}`}>
-              Entrega: {pedido.fecha_entrega}
-            </p>
-          )}
+          {urgencia && <p className={`text-xs ${urgencia.color}`}>{urgencia.label}</p>}
         </div>
         <div className="text-right shrink-0">
           <p className="font-bold">{formatMXN(Number(pedido.total))}</p>
           <p className="text-xs text-muted-foreground">anticipo {formatMXN(Number(pedido.anticipo))}</p>
+          {saldo > 0 && (
+            <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">Debe {formatMXN(saldo)}</p>
+          )}
         </div>
         <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); onVer() }}>
           <Eye className="h-4 w-4" />

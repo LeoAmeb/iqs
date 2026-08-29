@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+from django.db.models import F
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
@@ -141,7 +142,28 @@ class PedidoViewSet(ModelViewSet):
         # pedidos sin entregar ni cancelar.
         if self.request.query_params.get("pendientes") == "1":
             qs = qs.exclude(estatus__in=[EstatusPedido.ENTREGADO, EstatusPedido.CANCELADO])
+        # ?entrega=hoy|semana|vencido — filtros rápidos por fecha de entrega,
+        # siempre sobre pedidos activos (no tiene sentido marcar como "vencido"
+        # algo ya entregado o cancelado).
+        entrega = self.request.query_params.get("entrega")
+        if entrega in ("hoy", "semana", "vencido"):
+            qs = qs.exclude(estatus__in=[EstatusPedido.ENTREGADO, EstatusPedido.CANCELADO])
+            hoy = timezone.localdate()
+            if entrega == "hoy":
+                qs = qs.filter(fecha_entrega=hoy)
+            elif entrega == "semana":
+                qs = qs.filter(fecha_entrega__gte=hoy, fecha_entrega__lte=hoy + timedelta(days=7))
+            elif entrega == "vencido":
+                qs = qs.filter(fecha_entrega__lt=hoy)
         return qs
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        # Orden por default: lo que se entrega más pronto va primero (sin fecha,
+        # al final). Si el cliente pide un orden explícito (?ordering=...), se respeta.
+        if not self.request.query_params.get("ordering"):
+            queryset = queryset.order_by(F("fecha_entrega").asc(nulls_last=True), "-created_at")
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":

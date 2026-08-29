@@ -18,6 +18,7 @@ interface PedidosParams {
   estatus?: EstatusPedido
   todos?: "1"
   pendientes?: "1"
+  entrega?: "hoy" | "semana" | "vencido"
   page_size?: number
 }
 

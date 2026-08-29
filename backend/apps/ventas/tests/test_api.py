@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 import pytest
 from django.contrib.auth.models import Group, Permission
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -204,6 +207,46 @@ class TestPedidoViewSet:
         assert activo.folio in folios
         assert entregado.folio not in folios
         assert cancelado.folio not in folios
+
+    def test_filtro_entrega_hoy_y_vencido(self, client_emp, producto):
+        hoy = timezone.localdate()
+        de_hoy = _crear_pedido(client_emp, producto)
+        Pedido.objects.filter(pk=de_hoy.pk).update(fecha_entrega=hoy)
+        vencido = _crear_pedido(client_emp, producto)
+        Pedido.objects.filter(pk=vencido.pk).update(fecha_entrega=hoy - timedelta(days=3))
+        futuro = _crear_pedido(client_emp, producto)
+        Pedido.objects.filter(pk=futuro.pk).update(fecha_entrega=hoy + timedelta(days=15))
+
+        resp_hoy = client_emp.get(reverse("pedido-list"), {"entrega": "hoy"})
+        folios_hoy = [p["folio"] for p in resp_hoy.data["results"]]
+        assert folios_hoy == [de_hoy.folio]
+
+        resp_vencido = client_emp.get(reverse("pedido-list"), {"entrega": "vencido"})
+        folios_vencido = [p["folio"] for p in resp_vencido.data["results"]]
+        assert folios_vencido == [vencido.folio]
+
+    def test_filtro_entrega_vencido_excluye_entregados(self, client_emp, producto):
+        hoy = timezone.localdate()
+        pedido = _crear_pedido(client_emp, producto)
+        Pedido.objects.filter(pk=pedido.pk).update(fecha_entrega=hoy - timedelta(days=1))
+        client_emp.patch(reverse("pedido-detail", args=[pedido.pk]), {"estatus": "entregado"}, format="json")
+
+        resp = client_emp.get(reverse("pedido-list"), {"entrega": "vencido"})
+        folios = [p["folio"] for p in resp.data["results"]]
+        assert pedido.folio not in folios
+
+    def test_orden_default_es_por_fecha_de_entrega_mas_proxima(self, client_emp, producto):
+        hoy = timezone.localdate()
+        lejano = _crear_pedido(client_emp, producto)
+        Pedido.objects.filter(pk=lejano.pk).update(fecha_entrega=hoy + timedelta(days=20))
+        sin_fecha = _crear_pedido(client_emp, producto)
+        cercano = _crear_pedido(client_emp, producto)
+        Pedido.objects.filter(pk=cercano.pk).update(fecha_entrega=hoy + timedelta(days=1))
+
+        resp = client_emp.get(reverse("pedido-list"))
+        folios = [p["folio"] for p in resp.data["results"]]
+
+        assert folios.index(cercano.folio) < folios.index(lejano.folio) < folios.index(sin_fecha.folio)
 
 
 class TestProduccionViewSet:
