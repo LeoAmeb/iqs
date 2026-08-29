@@ -246,10 +246,10 @@ export function formatMXN(value: number): string {
 }
 
 export function totalesCarrito(items: { total: number; costo: number; iva: number }[]) {
-  const total = items.reduce((s, i) => s + i.total, 0)
-  const costo = items.reduce((s, i) => s + i.costo, 0)
-  const iva = items.reduce((s, i) => s + i.iva, 0)
-  const ganancia = total - costo - iva
+  const total = r2(items.reduce((s, i) => s + i.total, 0))
+  const costo = r2(items.reduce((s, i) => s + i.costo, 0))
+  const iva = r2(items.reduce((s, i) => s + i.iva, 0))
+  const ganancia = r2(total - costo - iva)
   const margen = total > 0 ? (ganancia / total) * 100 : 0
   return { total, costo, ganancia, margen: Math.round(margen * 100) / 100, iva }
 }
