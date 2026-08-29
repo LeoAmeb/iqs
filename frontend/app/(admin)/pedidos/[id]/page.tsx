@@ -7,6 +7,8 @@ import { ArrowLeft, ChevronDown, ChevronUp, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -45,6 +47,8 @@ const PROD_SIGUIENTE_LABEL: Record<EstatusProduccion, string> = {
   entregado: "",
 }
 
+type LiquidarPendiente = { incluirEstatusEntregado: boolean; onExito?: () => void } | null
+
 export default function PedidoDetallePage() {
   const router = useRouter()
   const params = useParams()
@@ -53,6 +57,29 @@ export default function PedidoDetallePage() {
   const { data: pedido, isLoading, isError } = usePedido(id)
   const updatePedido = useUpdatePedido(id)
   const deletePedido = useDeletePedido(id)
+
+  const [liquidar, setLiquidar] = useState<LiquidarPendiente>(null)
+  const [formaPagoLiquidar, setFormaPagoLiquidar] = useState<"" | "efectivo" | "transferencia" | "tarjeta">("")
+
+  function cancelarLiquidacion() {
+    setLiquidar(null)
+    setFormaPagoLiquidar("")
+  }
+
+  function confirmarLiquidacion() {
+    if (!liquidar || !formaPagoLiquidar || !pedido) return
+    const payload: Partial<Pick<typeof pedido, "anticipo" | "forma_pago" | "estatus">> = {
+      anticipo: pedido.total,
+      forma_pago: formaPagoLiquidar,
+    }
+    if (liquidar.incluirEstatusEntregado) payload.estatus = "entregado"
+    updatePedido.mutate(payload, {
+      onSuccess: () => {
+        liquidar.onExito?.()
+        cancelarLiquidacion()
+      },
+    })
+  }
 
   function handleEliminar() {
     if (confirm("¿Eliminar este pedido? Esta acción no se puede deshacer.")) {
@@ -168,7 +195,13 @@ export default function PedidoDetallePage() {
           <p className="text-sm font-medium mb-2">Estatus del pedido</p>
           <Select
             value={pedido.estatus}
-            onValueChange={(v) => updatePedido.mutate({ estatus: v as EstatusPedido })}
+            onValueChange={(v) => {
+              if (v === "entregado" && saldoPendiente > 0) {
+                setLiquidar({ incluirEstatusEntregado: true })
+                return
+              }
+              updatePedido.mutate({ estatus: v as EstatusPedido })
+            }}
             disabled={updatePedido.isPending}
           >
             <SelectTrigger>
@@ -193,17 +226,78 @@ export default function PedidoDetallePage() {
           Ítems de producción ({pedido.items.length})
         </h2>
         {pedido.items.map((item) => (
-          <ItemProduccionCard key={item.id} item={item} />
+          <ItemProduccionCard
+            key={item.id}
+            item={item}
+            saldoPendiente={saldoPendiente}
+            esUltimoPendiente={pedido.items
+              .filter((i) => i.id !== item.id)
+              .every((i) => i.estatus_produccion === "entregado")}
+            onRequiereLiquidar={(continuar) => setLiquidar({ incluirEstatusEntregado: false, onExito: continuar })}
+          />
         ))}
       </div>
+
+      {/* Liquidar antes de marcar entregado */}
+      <Dialog open={!!liquidar} onOpenChange={(open) => { if (!open) cancelarLiquidacion() }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Liquidar pedido</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            El cliente debe <span className="font-semibold text-foreground">{formatMXN(saldoPendiente)}</span>.
+            Registra cómo se cobró antes de marcar el pedido como entregado.
+          </p>
+          <div className="space-y-2">
+            <Label htmlFor="forma-pago-liquidar">Forma de pago</Label>
+            <Select value={formaPagoLiquidar} onValueChange={(v) => setFormaPagoLiquidar(v as typeof formaPagoLiquidar)}>
+              <SelectTrigger id="forma-pago-liquidar">
+                <SelectValue placeholder="Selecciona..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="efectivo">Efectivo</SelectItem>
+                <SelectItem value="transferencia">Transferencia</SelectItem>
+                <SelectItem value="tarjeta">Tarjeta</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelarLiquidacion}>
+              Cancelar
+            </Button>
+            <Button disabled={!formaPagoLiquidar || updatePedido.isPending} onClick={confirmarLiquidacion}>
+              {updatePedido.isPending ? "Guardando..." : "Liquidar y marcar entregado"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
 
-function ItemProduccionCard({ item }: { item: PedidoItem }) {
+function ItemProduccionCard({
+  item,
+  saldoPendiente,
+  esUltimoPendiente,
+  onRequiereLiquidar,
+}: {
+  item: PedidoItem
+  saldoPendiente: number
+  esUltimoPendiente: boolean
+  onRequiereLiquidar: (continuar: () => void) => void
+}) {
   const [logsAbiertos, setLogsAbiertos] = useState(false)
   const actualizar = useActualizarEstatusProduccion(item.id)
   const siguiente = PROD_SIGUIENTE[item.estatus_produccion]
+
+  function handleAvanzar() {
+    if (!siguiente) return
+    if (siguiente === "entregado" && esUltimoPendiente && saldoPendiente > 0) {
+      onRequiereLiquidar(() => actualizar.mutate({ estatus_produccion: siguiente }))
+      return
+    }
+    actualizar.mutate({ estatus_produccion: siguiente })
+  }
 
   return (
     <Card>
@@ -232,7 +326,7 @@ function ItemProduccionCard({ item }: { item: PedidoItem }) {
           <Button
             size="sm"
             className="w-full"
-            onClick={() => actualizar.mutate({ estatus_produccion: siguiente })}
+            onClick={handleAvanzar}
             disabled={actualizar.isPending}
           >
             {PROD_SIGUIENTE_LABEL[item.estatus_produccion]}
